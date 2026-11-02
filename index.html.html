@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>بوابة شواهد التقييم الذاتي | متوسطة عباد بن بشر</title>
+<style>
+:root{--navy:#15324b;--teal:#167c80;--muted:#64748b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#eaf2f3,#f7f8fa);font-family:Tahoma,Arial,sans-serif;color:#1e293b}
+.card{width:min(100%,460px);background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:32px;box-shadow:0 18px 55px #15324b14;text-align:center}
+.mark{width:64px;height:64px;margin:0 auto 18px;border-radius:18px;background:#e6f2f1;color:var(--teal);display:grid;place-items:center;font-size:28px;font-weight:bold}
+h1{font-size:23px;margin:0 0 8px;color:var(--navy)}.sub{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 25px}
+button{width:100%;border:0;border-radius:12px;padding:15px 18px;background:var(--navy);color:white;font-size:16px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}#status{min-height:26px;margin-top:18px;font-size:13px;line-height:1.7;color:var(--muted)}
+.note{margin-top:22px;padding-top:18px;border-top:1px solid #edf0f2;font-size:12px;line-height:1.8;color:#718096}
+</style></head>
+<body><main class="card">
+<div class="mark">ش</div><h1>بوابة شواهد التقييم الذاتي</h1>
+<p class="sub">متوسطة عباد بن بشر<br>سجّل الدخول باستخدام حساب Google للمتابعة.</p>
+<button id="googleBtn">المتابعة باستخدام Google</button>
+<div id="status" role="status">سيتم توجيهك إلى Google لتسجيل الدخول.</div>
+<div class="note">تسجيل الموظفين الجدد يخضع لاعتماد قائد المدرسة. لا تشارك كلمة المرور أو رموز الدخول مع أي شخص.</div>
+</main>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const SUPABASE_URL = 'https://qdprgcqdwelewlkoekld.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9';
+const statusEl=document.getElementById('status'), button=document.getElementById('googleBtn');
+if(SUPABASE_ANON_KEY.startsWith('PASTE_')){statusEl.textContent='يلزم إضافة مفتاح anon/public من إعدادات Supabase قبل تشغيل الصفحة.';button.disabled=true;}
+else{
+ const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ button.addEventListener('click',async()=>{
+  button.disabled=true;statusEl.textContent='جارٍ تحويلك إلى Google...';
+  const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+  if(error){statusEl.textContent='تعذر بدء تسجيل الدخول: '+error.message;button.disabled=false;}
+ });
+}
+</script></body></html>
