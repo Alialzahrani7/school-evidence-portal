@@ -16,13 +16,13 @@ button:disabled{opacity:.6;cursor:wait}#status{min-height:26px;margin-top:18px;f
 <body><main class="card">
 <div class="mark">ش</div><h1>بوابة شواهد التقييم الذاتي</h1>
 <p class="sub">متوسطة عباد بن بشر<br>سجّل الدخول باستخدام حساب Google للمتابعة.</p>
-<button id="googleBtn">المتابعة باستخدام Google</button>
+<button id="googleBtn">المتابعة باستخدام Google</rbutton>
 <div id="status" role="status">سيتم توجيهك إلى Google لتسجيل الدخول.</div>
 <div class="note">تسجيل الموظفين الجدد يخضع لاعتماد قائد المدرسة. لا تشارك كلمة المرور أو رموز الدخول مع أي شخص.</div>
 </main>
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-const SUPABASE_URL = 'https://qdprgcqdwelewlkoekld.supabase.co';
+const SUPABASE_URL = 'https://wgqroizrzfnwjplpmgyb.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9';
 const statusEl=document.getElementById('status'), button=document.getElementById('googleBtn');
 if(SUPABASE_ANON_KEY.startsWith('PASTE_')){statusEl.textContent='يلزم إضافة مفتاح anon/public من إعدادات Supabase قبل تشغيل الصفحة.';button.disabled=true;}
