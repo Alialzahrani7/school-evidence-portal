@@ -74,6 +74,11 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
     <div class="item-top"><div><h1 id="welcomeTitle">مرحبًا</h1><div class="muted" id="roleLabel"></div></div><span class="pill approved">حساب معتمد</span></div>
   </div>
 
+  <section id="teacherApprovalPanel" class="card hidden">
+    <div class="item-top"><div><h2>طلبات اعتماد المعلمين</h2><div class="muted">الحسابات الجديدة التي تنتظر موافقة قائد المدرسة</div></div><button id="refreshTeachersBtn" class="secondary">تحديث الطلبات</button></div>
+    <div id="teacherRequestsList" class="muted">جارٍ تحميل طلبات الاعتماد...</div>
+  </section>
+
   <section id="teacherPanel" class="card hidden">
     <h2>رفع شاهد جديد</h2>
     <form id="uploadForm">
@@ -101,7 +106,7 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL = 'https://wgqroizrzfnwjplpmgyb.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_kIjL_5rYAS3rKQ6PE7ZPw_qVIYwpv9';
 const BUCKET = 'evidence-files';
 const REDIRECT_URL = 'https://alialzahrani7.github.io/school-evidence-portal/';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
@@ -151,8 +156,10 @@ async function startApp(user){
   const isAdmin=['school_leader','system_admin'].includes(profile.role);
   $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
   $('teacherPanel').classList.toggle('hidden',isAdmin);
+  $('teacherApprovalPanel').classList.toggle('hidden',!isAdmin);
   $('listTitle').textContent=isAdmin?'جميع الشواهد ومراجعتها':'شواهدي المرفوعة';
   await loadReferenceData();
+  if(isAdmin) await loadPendingTeachers();
   await loadEvidence();
 }
 
@@ -218,6 +225,35 @@ $('uploadForm').addEventListener('submit',async e=>{
   finally{$('uploadBtn').disabled=false;}
 });
 
+async function loadPendingTeachers(){
+  $('teacherRequestsList').textContent='جارٍ تحميل طلبات الاعتماد...';
+  const {data,error}=await supabase.from('profiles')
+    .select('id,full_name,email,created_at')
+    .eq('account_status','pending')
+    .order('created_at',{ascending:false});
+  if(error){$('teacherRequestsList').textContent='تعذر تحميل الطلبات: '+error.message;return;}
+  if(!data?.length){$('teacherRequestsList').textContent='لا توجد حسابات بانتظار الاعتماد.';return;}
+  $('teacherRequestsList').innerHTML=data.map(p=>{
+    const name=escapeHtml(p.full_name||'موظف جديد');
+    const email=escapeHtml(p.email||'');
+    const created=p.created_at?new Date(p.created_at).toLocaleString('ar-SA'):'';
+    return `<article class="item"><div class="item-top"><h3>${name}</h3><span class="pill pending">بانتظار الاعتماد</span></div><p>البريد الإلكتروني: ${email}</p><p>تاريخ التسجيل: ${escapeHtml(created)}</p><div class="actions"><button class="success" data-teacher-action="approve" data-teacher-id="${p.id}">اعتماد الحساب</button><button class="danger" data-teacher-action="reject" data-teacher-id="${p.id}">رفض الحساب</button></div></article>`;
+  }).join('');
+  $('teacherRequestsList').querySelectorAll('[data-teacher-action]').forEach(btn=>btn.addEventListener('click',()=>reviewTeacherAccount(btn.dataset.teacherId,btn.dataset.teacherAction)));
+}
+
+async function reviewTeacherAccount(userId,action){
+  const label=action==='approve'?'اعتماد هذا الحساب؟':'رفض هذا الحساب؟';
+  if(!confirm(label))return;
+  const buttons=[...$('teacherRequestsList').querySelectorAll(`[data-teacher-id="${userId}"]`)];
+  buttons.forEach(b=>b.disabled=true);
+  const functionName=action==='approve'?'approve_teacher_account':'reject_teacher_account';
+  const {error}=await supabase.rpc(functionName,{target_user_id:userId});
+  if(error){alert('تعذر تحديث حالة الحساب: '+error.message);buttons.forEach(b=>b.disabled=false);return;}
+  await loadPendingTeachers();
+  alert(action==='approve'?'تم اعتماد حساب المعلم.':'تم رفض حساب المعلم.');
+}
+
 async function loadEvidence(){
   $('evidenceList').textContent='جارٍ تحميل الشواهد...';
   const isAdmin=['school_leader','system_admin'].includes(currentProfile.role);
@@ -280,6 +316,7 @@ async function reviewEvidence(id,status){
 }
 
 $('refreshBtn').addEventListener('click',loadEvidence);
+$('refreshTeachersBtn').addEventListener('click',loadPendingTeachers);
 $('logoutBtn').addEventListener('click',async()=>{
   $('logoutBtn').disabled=true;
   const {error}=await supabase.auth.signOut();
