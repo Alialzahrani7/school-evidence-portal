@@ -1,123 +1,310 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>بوابة شواهد التقييم الذاتي | متوسطة عباد بن بشر</title>
 <style>
-:root{--navy:#15324b;--teal:#167c80;--muted:#64748b}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#eaf2f3,#f7f8fa);font-family:Tahoma,Arial,sans-serif;color:#1e293b}
-.card{width:min(100%,460px);background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:32px;box-shadow:0 18px 55px #15324b14;text-align:center}
-.mark{width:64px;height:64px;margin:0 auto 18px;border-radius:18px;background:#e6f2f1;color:var(--teal);display:grid;place-items:center;font-size:28px;font-weight:bold}
-h1{font-size:23px;margin:0 0 8px;color:var(--navy)}.sub{color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 25px}
-button{width:100%;border:0;border-radius:12px;padding:15px 18px;background:var(--navy);color:white;font-size:16px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.6;cursor:wait}#status{min-height:26px;margin-top:18px;font-size:13px;line-height:1.7;color:var(--muted)}
-.note{margin-top:22px;padding-top:18px;border-top:1px solid #edf0f2;font-size:12px;line-height:1.8;color:#718096}
-</style></head>
-<body><main class="card">
-<div class="mark">ش</div><h1>بوابة شواهد التقييم الذاتي</h1>
-<p class="sub">متوسطة عباد بن بشر<br>سجّل الدخول باستخدام حساب Google للمتابعة.</p>
-<button id="googleBtn">المتابعة باستخدام Google</rbutton>
-<div id="status" role="status">سيتم توجيهك إلى Google لتسجيل الدخول.</div>
-<div class="note">تسجيل الموظفين الجدد يخضع لاعتماد قائد المدرسة. لا تشارك كلمة المرور أو رموز الدخول مع أي شخص.</div>
-</main>
-<script type="module">
+:root{--navy:#15324b;--teal:#167c80;--muted:#64748b;--line:#e2e8f0;--bg:#f3f7f8;--red:#b42318;--green:#087443}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:#1e293b;line-height:1.7}
+button,input,select,textarea{font:inherit}
+button{border:0;border-radius:11px;padding:11px 16px;background:var(--navy);color:#fff;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+button.secondary{background:#e8eff3;color:var(--navy)}
+button.danger{background:#a52a2a}
+button.success{background:#087443}
+header{background:var(--navy);color:#fff;padding:18px 22px}
+.header-inner{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:18px;font-weight:bold}.school{font-size:13px;opacity:.85}
+main{max-width:1100px;margin:26px auto;padding:0 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 10px 30px #15324b0b;margin-bottom:18px}
+.login{max-width:470px;margin:8vh auto;text-align:center;padding:32px}
+.mark{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:#e6f2f1;color:var(--teal);display:grid;place-items:center;font-size:28px;font-weight:bold}
+h1{font-size:23px;color:var(--navy);margin:0 0 8px}h2{font-size:19px;color:var(--navy);margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}
+.sub,.muted{color:var(--muted);font-size:13px}
+label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
+input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:11px;background:#fff;color:#1e293b}
+textarea{min-height:85px;resize:vertical}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.status{padding:11px 13px;border-radius:10px;background:#f1f5f9;color:#475569;font-size:13px;margin-top:14px;white-space:pre-wrap}
+.status.error{background:#fff0ef;color:var(--red)}.status.ok{background:#eaf7ef;color:var(--green)}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;background:#eef2f6}
+.pill.pending{background:#fff4d6;color:#8a5a00}.pill.approved{background:#e5f6ec;color:#087443}.pill.rejected{background:#ffeded;color:#a52a2a}
+.item{border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0}
+.item-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.item p{margin:7px 0;font-size:13px;color:#475569}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+.hidden{display:none!important}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:17px}.login{margin:5vh auto}}
+</style>
+</head>
+<body>
+<header id="siteHeader" class="hidden">
+  <div class="header-inner">
+    <div><div class="brand">بوابة شواهد التقييم الذاتي</div><div class="school">متوسطة عباد بن بشر</div></div>
+    <div class="actions" style="margin:0"><span id="userLabel" class="school"></span><button id="logoutBtn" class="secondary">تسجيل الخروج</button></div>
+  </div>
+</header>
 
+<main>
+<section id="loginView" class="card login">
+  <div class="mark">ش</div>
+  <h1>بوابة شواهد التقييم الذاتي</h1>
+  <p class="sub">متوسطة عباد بن بشر<br>سجّل الدخول باستخدام حساب Google للمتابعة.</p>
+  <button id="googleBtn" style="width:100%;margin-top:12px">المتابعة باستخدام Google</button>
+  <div id="loginStatus" class="status">سيتم توجيهك إلى Google لتسجيل الدخول.</div>
+  <p class="muted">تسجيل الموظفين الجدد يخضع لاعتماد قائد المدرسة. لا تشارك رموز الدخول مع أي شخص.</p>
+</section>
+
+<section id="pendingView" class="card hidden">
+  <h2>الحساب بانتظار الاعتماد</h2>
+  <p>تم تسجيل دخولك، لكن حسابك لم يُعتمد بعد من قائد المدرسة. ستتمكن من رفع الشواهد بعد اعتماد الحساب.</p>
+  <div id="pendingEmail" class="muted"></div>
+</section>
+
+<section id="rejectedView" class="card hidden">
+  <h2>الحساب غير معتمد</h2>
+  <p>تعذر تمكين هذا الحساب من استخدام البوابة. يرجى التواصل مع قائد المدرسة.</p>
+</section>
+
+<section id="appView" class="hidden">
+  <div class="card">
+    <div class="item-top"><div><h1 id="welcomeTitle">مرحبًا</h1><div class="muted" id="roleLabel"></div></div><span class="pill approved">حساب معتمد</span></div>
+  </div>
+
+  <section id="teacherPanel" class="card hidden">
+    <h2>رفع شاهد جديد</h2>
+    <form id="uploadForm">
+      <div class="grid">
+        <div><label for="domainSelect">مجال التقييم</label><select id="domainSelect" required><option value="">اختر المجال</option></select></div>
+        <div><label for="categorySelect">تصنيف الشاهد</label><select id="categorySelect" required disabled><option value="">اختر التصنيف</option></select></div>
+      </div>
+      <label for="titleInput">عنوان الشاهد</label><input id="titleInput" maxlength="180" required placeholder="مثال: خطة علاجية للطلاب">
+      <label for="descriptionInput">وصف الشاهد (اختياري)</label><textarea id="descriptionInput" maxlength="1000" placeholder="اكتب وصفًا مختصرًا للشاهد"></textarea>
+      <label for="fileInput">ملف الشاهد (حد أقصى 10 ميجابايت)</label>
+      <input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.docx,.pptx,.xlsx" required>
+      <div class="actions"><button id="uploadBtn" type="submit">رفع الشاهد</button></div>
+      <div id="uploadStatus" class="status">الصيغ المسموحة: PDF وJPG وPNG وWEBP وDOCX وPPTX وXLSX.</div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="item-top"><h2 id="listTitle">الشواهد</h2><button id="refreshBtn" class="secondary">تحديث القائمة</button></div>
+    <div id="evidenceList" class="muted">جارٍ تحميل الشواهد...</div>
+  </section>
+</section>
+</main>
+
+<script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const SUPABASE_URL = 'https://wgqroizrzfnwjplpmgyb.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_kIjL_5rYAS3rKQ6PE7ZPw_qVIYwpv9';
+const BUCKET = 'evidence-files';
+const REDIRECT_URL = 'https://alialzahrani7.github.io/school-evidence-portal/';
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-const SUPABASE_ANON_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9';
+const $ = id => document.getElementById(id);
+let currentUser = null;
+let currentProfile = null;
+let domains = [];
+let categories = [];
 
-const statusEl = document.getElementById('status');
+function showOnly(id){
+  ['loginView','pendingView','rejectedView','appView'].forEach(x => $(x).classList.toggle('hidden',x!==id));
+  $('siteHeader').classList.toggle('hidden',id==='loginView');
+}
+function setStatus(id,message,type=''){
+  const el=$(id); el.textContent=message; el.className='status'+(type?' '+type:'');
+}
+function safeText(value){return value==null?'':String(value)}
+function statusName(s){return s==='approved'?'معتمد':s==='rejected'?'مرفوض':'بانتظار المراجعة'}
+function statusPill(s){return `<span class="pill ${s}">${statusName(s)}</span>`}
+function escapeHtml(s){return safeText(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
-const button = document.getElementById('googleBtn');
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// التحقق من حالة تسجيل الدخول
-
-async function checkLogin() {
-
-  const { data, error } = await supabase.auth.getSession();
-
-  if (error) {
-
-    statusEl.textContent = 'حدث خطأ: ' + error.message;
-
+async function loadProfile(user){
+  const {data,error}=await supabase.from('profiles')
+    .select('id,full_name,email,role,account_status').eq('id',user.id).maybeSingle();
+  if(error) throw error;
+  return data;
+}
+async function startApp(user){
+  currentUser=user;
+  $('userLabel').textContent=user.email||'';
+  let profile;
+  try{profile=await loadProfile(user)}catch(e){
+    showOnly('loginView'); setStatus('loginStatus','تعذر قراءة ملف المستخدم: '+e.message,'error'); return;
+  }
+  if(!profile){
+    showOnly('pendingView'); $('pendingEmail').textContent=user.email||''; return;
+  }
+  currentProfile=profile;
+  if(profile.account_status!=='approved'){
+    showOnly(profile.account_status==='rejected'?'rejectedView':'pendingView');
+    $('pendingEmail').textContent=user.email||'';
     return;
-
   }
-
-  if (data.session) {
-
-    statusEl.textContent =
-
-      'تم تسجيل الدخول بنجاح: ' + data.session.user.email;
-
-    button.textContent = 'تم تسجيل الدخول';
-
-    button.disabled = true;
-
-  }
-
+  showOnly('appView');
+  $('welcomeTitle').textContent='مرحبًا '+(profile.full_name||user.email||'');
+  const isAdmin=['school_leader','system_admin'].includes(profile.role);
+  $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
+  $('teacherPanel').classList.toggle('hidden',isAdmin);
+  $('listTitle').textContent=isAdmin?'جميع الشواهد ومراجعتها':'شواهدي المرفوعة';
+  await loadReferenceData();
+  await loadEvidence();
 }
 
-// تنفيذ التحقق عند فتح الصفحة
+async function loadReferenceData(){
+  const [d,c]=await Promise.all([
+    supabase.from('evaluation_domains').select('id,name,sort_order').order('sort_order'),
+    supabase.from('evidence_categories').select('id,domain_id,name,sort_order').order('sort_order')
+  ]);
+  if(d.error) throw d.error;
+  if(c.error) throw c.error;
+  domains=d.data||[]; categories=c.data||[];
+  $('domainSelect').innerHTML='<option value="">اختر المجال</option>'+domains.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`).join('');
+}
+$('domainSelect').addEventListener('change',()=>{
+  const domainId=$('domainSelect').value;
+  const filtered=categories.filter(c=>c.domain_id===domainId);
+  $('categorySelect').innerHTML='<option value="">اختر التصنيف</option>'+filtered.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`).join('');
+  $('categorySelect').disabled=!domainId||filtered.length===0;
+});
 
-checkLogin();
-
-// تسجيل الدخول عبر Google
-
-button.addEventListener('click', async () => {
-
-  button.disabled = true;
-
-  statusEl.textContent = 'جارٍ تحويلك إلى Google...';
-
-  const { error } = await supabase.auth.signInWithOAuth({
-
-    provider: 'google',
-
-    options: {
-
-      redirectTo:
-
-        'https://alialzahrani7.github.io/school-evidence-portal/index.html'
-
+const allowedTypes=new Set([
+'application/pdf','image/jpeg','image/png','image/webp',
+'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+]);
+$('uploadForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const file=$('fileInput').files[0];
+  if(!file)return;
+  if(file.size>10*1024*1024){setStatus('uploadStatus','حجم الملف يتجاوز 10 ميجابايت.','error');return;}
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  const allowedExt=['pdf','jpg','jpeg','png','webp','docx','pptx','xlsx'];
+  if(!allowedExt.includes(ext)|| (file.type && !allowedTypes.has(file.type))){
+    setStatus('uploadStatus','نوع الملف غير مسموح. اختر PDF أو صورة أو DOCX أو PPTX أو XLSX.','error');return;
+  }
+  const title=$('titleInput').value.trim();
+  const categoryId=$('categorySelect').value;
+  if(!title||!categoryId){setStatus('uploadStatus','أكمل المجال والتصنيف وعنوان الشاهد.','error');return;}
+  $('uploadBtn').disabled=true;
+  setStatus('uploadStatus','جارٍ رفع الملف وحفظ بيانات الشاهد...');
+  const cleanName=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'_').slice(-100);
+  const filePath=`${currentUser.id}/${crypto.randomUUID()}_${cleanName}`;
+  try{
+    const {error:storageError}=await supabase.storage.from(BUCKET).upload(filePath,file,{upsert:false,contentType:file.type||undefined});
+    if(storageError)throw storageError;
+    const {error:dbError}=await supabase.from('evidence_uploads').insert({
+      user_id:currentUser.id,category_id:categoryId,title,
+      description:$('descriptionInput').value.trim()||null,
+      file_path:filePath,file_name:file.name,review_status:'pending'
+    });
+    if(dbError){
+      // Remove the uploaded object if saving its metadata failed.
+      await supabase.storage.from(BUCKET).remove([filePath]);
+      throw dbError;
     }
+    $('uploadForm').reset();
+    $('categorySelect').innerHTML='<option value="">اختر التصنيف</option>';
+    $('categorySelect').disabled=true;
+    setStatus('uploadStatus','تم رفع الشاهد بنجاح، وهو الآن بانتظار المراجعة.','ok');
+    await loadEvidence();
+  }catch(err){setStatus('uploadStatus','تعذر رفع الشاهد: '+err.message,'error');}
+  finally{$('uploadBtn').disabled=false;}
+});
 
+async function loadEvidence(){
+  $('evidenceList').textContent='جارٍ تحميل الشواهد...';
+  const isAdmin=['school_leader','system_admin'].includes(currentProfile.role);
+  let query=supabase.from('evidence_uploads')
+    .select('id,user_id,category_id,title,description,file_path,file_name,review_status,reviewer_notes,created_at,reviewed_at')
+    .order('created_at',{ascending:false});
+  if(!isAdmin)query=query.eq('user_id',currentUser.id);
+  const {data,error}=await query;
+  if(error){$('evidenceList').textContent='تعذر تحميل الشواهد: '+error.message;return;}
+  if(!data?.length){$('evidenceList').textContent='لا توجد شواهد حتى الآن.';return;}
+  const userIds=[...new Set(data.map(x=>x.user_id))];
+  const [pResult]=isAdmin?await Promise.all([
+    supabase.from('profiles').select('id,full_name,email').in('id',userIds)
+  ]):[{data:[]}];
+  const profileMap=new Map((pResult?.data||[]).map(p=>[p.id,p]));
+  const categoryMap=new Map(categories.map(c=>[c.id,c.name]));
+  $('evidenceList').innerHTML=data.map(item=>{
+    const owner=profileMap.get(item.user_id);
+    const created=item.created_at?new Date(item.created_at).toLocaleString('ar-SA'):'';
+    const ownerLine=isAdmin?`<p>المعلم: ${escapeHtml(owner?.full_name||owner?.email||item.user_id)}</p>`:'';
+    const notes=item.reviewer_notes?`<p>ملاحظات المراجع: ${escapeHtml(item.reviewer_notes)}</p>`:'';
+    const review=isAdmin?`
+      <hr><label for="note-${item.id}">ملاحظات المراجعة</label>
+      <textarea id="note-${item.id}" maxlength="1000" placeholder="اكتب الملاحظات (اختياري)">${escapeHtml(item.reviewer_notes||'')}</textarea>
+      <div class="actions">
+        <button class="success" data-review="approved" data-id="${item.id}">اعتماد</button>
+        <button class="danger" data-review="rejected" data-id="${item.id}">رفض</button>
+      </div>`:'';
+    return `<article class="item">
+      <div class="item-top"><h3>${escapeHtml(item.title)}</h3>${statusPill(item.review_status)}</div>
+      ${ownerLine}
+      <p>التصنيف: ${escapeHtml(categoryMap.get(item.category_id)||'غير محدد')}</p>
+      <p>الملف: ${escapeHtml(item.file_name)} · تاريخ الرفع: ${escapeHtml(created)}</p>
+      ${item.description?`<p>الوصف: ${escapeHtml(item.description)}</p>`:''}
+      ${notes}
+      <div class="actions"><button class="secondary" data-open="${item.id}">فتح الملف</button></div>
+      ${review}
+    </article>`;
+  }).join('');
+  $('evidenceList').querySelectorAll('[data-open]').forEach(btn=>btn.addEventListener('click',()=>openEvidence(data.find(x=>x.id===btn.dataset.open))));
+  $('evidenceList').querySelectorAll('[data-review]').forEach(btn=>btn.addEventListener('click',()=>reviewEvidence(btn.dataset.id,btn.dataset.review)));
+}
+
+async function openEvidence(item){
+  if(!item)return;
+  const {data,error}=await supabase.storage.from(BUCKET).createSignedUrl(item.file_path,300);
+  if(error){alert('تعذر فتح الملف: '+error.message);return;}
+  window.open(data.signedUrl,'_blank','noopener,noreferrer');
+}
+async function reviewEvidence(id,status){
+  const note=$('note-'+id)?.value.trim()||null;
+  const btns=[...$('evidenceList').querySelectorAll(`[data-id="${id}"]`)];
+  btns.forEach(b=>b.disabled=true);
+  const {error}=await supabase.from('evidence_uploads').update({
+    review_status:status,reviewer_notes:note,
+    reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()
+  }).eq('id',id);
+  if(error){alert('تعذر حفظ المراجعة: '+error.message);btns.forEach(b=>b.disabled=false);return;}
+  await loadEvidence();
+}
+
+$('refreshBtn').addEventListener('click',loadEvidence);
+$('logoutBtn').addEventListener('click',async()=>{
+  $('logoutBtn').disabled=true;
+  const {error}=await supabase.auth.signOut();
+  $('logoutBtn').disabled=false;
+  if(error)alert('تعذر تسجيل الخروج: '+error.message);
+});
+$('googleBtn').addEventListener('click',async()=>{
+  $('googleBtn').disabled=true;
+  setStatus('loginStatus','جارٍ تحويلك إلى Google...');
+  const {error}=await supabase.auth.signInWithOAuth({
+    provider:'google',options:{redirectTo:REDIRECT_URL}
   });
-
-  if (error) {
-
-    statusEl.textContent =
-
-      'تعذر تسجيل الدخول: ' + error.message;
-
-    button.disabled = false;
-
-  }
-
+  if(error){setStatus('loginStatus','تعذر تسجيل الدخول: '+error.message,'error');$('googleBtn').disabled=false;}
 });
 
-// مراقبة تغير حالة تسجيل الدخول
-
-supabase.auth.onAuthStateChange((event, session) => {
-
-  if (event === 'SIGNED_IN' && session) {
-
-    statusEl.textContent =
-
-      'تم تسجيل الدخول بنجاح: ' + session.user.email;
-
-    button.textContent = 'تم تسجيل الدخول';
-
-    button.disabled = true;
-
-  }
-
+async function initialize(){
+  const {data,error}=await supabase.auth.getSession();
+  if(error){setStatus('loginStatus','حدث خطأ: '+error.message,'error');return;}
+  if(data.session)await startApp(data.session.user);
+}
+supabase.auth.onAuthStateChange((event,session)=>{
+  if(event==='SIGNED_OUT'){currentUser=null;currentProfile=null;showOnly('loginView');$('googleBtn').disabled=false;setStatus('loginStatus','تم تسجيل الخروج.');}
+  if(event==='SIGNED_IN'&&session){setTimeout(()=>startApp(session.user),0);}
 });
-
+initialize().catch(err=>{showOnly('loginView');setStatus('loginStatus','حدث خطأ: '+err.message,'error');});
 </script>
 </body>
 </html>
