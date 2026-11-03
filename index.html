@@ -21,22 +21,103 @@ button:disabled{opacity:.6;cursor:wait}#status{min-height:26px;margin-top:18px;f
 <div class="note">تسجيل الموظفين الجدد يخضع لاعتماد قائد المدرسة. لا تشارك كلمة المرور أو رموز الدخول مع أي شخص.</div>
 </main>
 <script type="module">
+
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
 const SUPABASE_URL = 'https://wgqroizrzfnwjplpmgyb.supabase.co';
+
 const SUPABASE_ANON_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9';
-const statusEl=document.getElementById('status'), button=document.getElementById('googleBtn');
-if(SUPABASE_ANON_KEY.startsWith('PASTE_')){statusEl.textContent='يلزم إضافة مفتاح anon/public من إعدادات Supabase قبل تشغيل الصفحة.';button.disabled=true;}
-else{
- const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
- button.addEventListener('click',async()=>{
-  button.disabled=true;statusEl.textContent='جارٍ تحويلك إلى Google...';
-const {error}=await supabase.auth.signInWithOAuth({
-  provider: 'google',
-  options: {
-    redirectTo: 'https://alialzahrani7.github.io/school-evidence-portal/index.html'
+
+const statusEl = document.getElementById('status');
+
+const button = document.getElementById('googleBtn');
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// التحقق من حالة تسجيل الدخول
+
+async function checkLogin() {
+
+  const { data, error } = await supabase.auth.getSession();
+
+  if (error) {
+
+    statusEl.textContent = 'حدث خطأ: ' + error.message;
+
+    return;
+
   }
-});
-  if(error){statusEl.textContent='تعذر بدء تسجيل الدخول: '+error.message;button.disabled=false;}
- });
+
+  if (data.session) {
+
+    statusEl.textContent =
+
+      'تم تسجيل الدخول بنجاح: ' + data.session.user.email;
+
+    button.textContent = 'تم تسجيل الدخول';
+
+    button.disabled = true;
+
+  }
+
 }
-</script></body></html>
+
+// تنفيذ التحقق عند فتح الصفحة
+
+checkLogin();
+
+// تسجيل الدخول عبر Google
+
+button.addEventListener('click', async () => {
+
+  button.disabled = true;
+
+  statusEl.textContent = 'جارٍ تحويلك إلى Google...';
+
+  const { error } = await supabase.auth.signInWithOAuth({
+
+    provider: 'google',
+
+    options: {
+
+      redirectTo:
+
+        'https://alialzahrani7.github.io/school-evidence-portal/index.html'
+
+    }
+
+  });
+
+  if (error) {
+
+    statusEl.textContent =
+
+      'تعذر تسجيل الدخول: ' + error.message;
+
+    button.disabled = false;
+
+  }
+
+});
+
+// مراقبة تغير حالة تسجيل الدخول
+
+supabase.auth.onAuthStateChange((event, session) => {
+
+  if (event === 'SIGNED_IN' && session) {
+
+    statusEl.textContent =
+
+      'تم تسجيل الدخول بنجاح: ' + session.user.email;
+
+    button.textContent = 'تم تسجيل الدخول';
+
+    button.disabled = true;
+
+  }
+
+});
+
+</script>
+</body>
+</html>
