@@ -30,7 +30,12 @@ else{
  const supabase=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
  button.addEventListener('click',async()=>{
   button.disabled=true;statusEl.textContent='جارٍ تحويلك إلى Google...';
-  const {error}=await supabase.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin}});
+const {error}=await supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: {
+    redirectTo: 'https://alialzahrani7.github.io/school-evidence-portal/index.html'
+  }
+});
   if(error){statusEl.textContent='تعذر بدء تسجيل الدخول: '+error.message;button.disabled=false;}
  });
 }
