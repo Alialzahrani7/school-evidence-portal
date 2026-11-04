@@ -5,39 +5,414 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>بوابة شواهد التقييم الذاتي | متوسطة عباد بن بشر</title>
 <style>
-:root{--navy:#15324b;--teal:#167c80;--muted:#64748b;--line:#e2e8f0;--bg:#f3f7f8;--red:#b42318;--green:#087443}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:#1e293b;line-height:1.7}
-button,input,select,textarea{font:inherit}
-button{border:0;border-radius:11px;padding:11px 16px;background:var(--navy);color:#fff;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-button.secondary{background:#e8eff3;color:var(--navy)}
-button.danger{background:#a52a2a}
-button.success{background:#087443}
-header{background:var(--navy);color:#fff;padding:18px 22px}
-.header-inner{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{font-size:18px;font-weight:bold}.school{font-size:13px;opacity:.85}
-main{max-width:1100px;margin:26px auto;padding:0 16px}
-.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 10px 30px #15324b0b;margin-bottom:18px}
-.login{max-width:470px;margin:8vh auto;text-align:center;padding:32px}
-.mark{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:#e6f2f1;color:var(--teal);display:grid;place-items:center;font-size:28px;font-weight:bold}
-h1{font-size:23px;color:var(--navy);margin:0 0 8px}h2{font-size:19px;color:var(--navy);margin:0 0 14px}h3{font-size:16px;margin:0 0 8px}
-.sub,.muted{color:var(--muted);font-size:13px}
-label{display:block;font-size:13px;font-weight:bold;margin:12px 0 5px}
-input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:11px;background:#fff;color:#1e293b}
-textarea{min-height:85px;resize:vertical}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.status{padding:11px 13px;border-radius:10px;background:#f1f5f9;color:#475569;font-size:13px;margin-top:14px;white-space:pre-wrap}
-.status.error{background:#fff0ef;color:var(--red)}.status.ok{background:#eaf7ef;color:var(--green)}
-.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;background:#eef2f6}
-.pill.pending{background:#fff4d6;color:#8a5a00}.pill.approved{background:#e5f6ec;color:#087443}.pill.rejected{background:#ffeded;color:#a52a2a}
-.item{border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0}
-.item-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.item p{margin:7px 0;font-size:13px;color:#475569}
-hr{border:0;border-top:1px solid var(--line);margin:18px 0}
-.hidden{display:none!important}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.card{padding:17px}.login{margin:5vh auto}}
+  
+:root {
+  --navy: #17324d;
+  --navy-dark: #10263b;
+  --teal: #168b89;
+  --teal-light: #e8f5f3;
+  --muted: #718096;
+  --line: #e5ebf0;
+  --bg: #f4f7fa;
+  --red: #c24145;
+  --green: #16845b;
+  --gold: #b7791f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: Tahoma, Arial, sans-serif;
+  color: #26384a;
+  line-height: 1.8;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 11px 19px;
+  background: var(--navy);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .2s ease;
+  box-shadow: 0 3px 8px #17324d12;
+}
+
+button:hover {
+  background: var(--navy-dark);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: wait;
+  transform: none;
+}
+
+button.secondary {
+  background: #eaf0f5;
+  color: var(--navy);
+  box-shadow: none;
+}
+
+button.secondary:hover {
+  background: #dce7ef;
+}
+
+button.danger {
+  background: #b83b43;
+}
+
+button.success {
+  background: #16845b;
+}
+
+button.success:hover {
+  background: #106d49;
+}
+
+header {
+  background: linear-gradient(120deg, #10263b, #1d4963);
+  color: white;
+  padding: 19px 24px;
+  box-shadow: 0 5px 20px #10263b18;
+  border-bottom: 3px solid var(--teal);
+}
+
+.header-inner {
+  max-width: 1180px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-size: 19px;
+  font-weight: bold;
+  letter-spacing: -.3px;
+}
+
+.school {
+  font-size: 13px;
+  opacity: .85;
+}
+
+main {
+  max-width: 1180px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 19px;
+  padding: 25px;
+  box-shadow: 0 7px 25px #17324d08;
+  margin-bottom: 21px;
+}
+
+#appView > .card:first-child {
+  background: linear-gradient(115deg, #17324d, #216477);
+  color: white;
+  border: 0;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+#appView > .card:first-child h1 {
+  color: white;
+  font-size: 25px;
+}
+
+#appView > .card:first-child .muted {
+  color: #d5e6ec;
+}
+
+.login {
+  max-width: 480px;
+  margin: 9vh auto;
+  text-align: center;
+  padding: 38px;
+}
+
+.mark {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 20px;
+  border-radius: 23px;
+  background: var(--teal-light);
+  color: var(--teal);
+  display: grid;
+  place-items: center;
+  font-size: 33px;
+  font-weight: bold;
+  border: 1px solid #d1e9e5;
+}
+
+h1 {
+  font-size: 24px;
+  color: var(--navy);
+  margin: 0 0 9px;
+}
+
+h2 {
+  font-size: 19px;
+  color: var(--navy);
+  margin: 0 0 14px;
+}
+
+h3 {
+  font-size: 16px;
+  color: var(--navy);
+  margin: 0 0 8px;
+}
+
+.sub, .muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--navy);
+  margin: 14px 0 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  border: 1px solid #d5dfe7;
+  border-radius: 11px;
+  padding: 12px 14px;
+  background: #fbfcfd;
+  color: #26384a;
+  outline: none;
+  transition: .2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px #168b8918;
+  background: white;
+}
+
+textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.status {
+  padding: 13px 15px;
+  border-radius: 12px;
+  background: #f0f4f7;
+  color: #526477;
+  font-size: 13px;
+  margin-top: 15px;
+  white-space: pre-wrap;
+  border: 1px solid #e5ebf0;
+}
+
+.status.error {
+  background: #fff0ef;
+  color: var(--red);
+  border-color: #f6d6d5;
+}
+
+.status.ok {
+  background: #eaf7ef;
+  color: var(--green);
+  border-color: #cdebd8;
+}
+
+.pill {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  background: #edf1f5;
+}
+
+.pill.pending {
+  background: #fff4d8;
+  color: #96620c;
+}
+
+.pill.approved {
+  background: #e5f6ec;
+  color: #087443;
+}
+
+.pill.rejected {
+  background: #ffeded;
+  color: #a52a2a;
+}
+
+.item {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 17px;
+  margin: 13px 0;
+  background: #fff;
+  transition: .2s ease;
+}
+
+.item:hover {
+  border-color: #cbdedc;
+  box-shadow: 0 5px 16px #17324d08;
+}
+
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.item p {
+  margin: 7px 0;
+  font-size: 13px;
+  color: #526477;
+}
+
+#schoolStatsPanel {
+  border-top: 4px solid var(--teal);
+}
+
+#schoolStatsPanel > .grid .item {
+  margin: 0;
+  min-height: 105px;
+  background: #fbfcfd;
+}
+
+#schoolStatsPanel > .grid .item h1 {
+  font-size: 29px;
+  margin-top: 5px;
+}
+
+#schoolOverallPercentage {
+  font-size: 39px !important;
+  margin: 5px 0;
+}
+
+#schoolStatsPanel > .item[style*="background"] {
+  border: 1px solid #cde5e1;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+#domainStats .item {
+  padding: 19px;
+  background: #fcfdfd;
+}
+
+#teacherPanel {
+  border-top: 4px solid var(--teal);
+}
+
+#teacherApprovalPanel {
+  border-top: 4px solid #b7791f;
+}
+
+#evidenceList .item {
+  padding: 20px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 21px 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+::placeholder {
+  color: #a1adba;
+}
+
+@media (max-width: 700px) {
+  main {
+    margin: 18px auto;
+    padding: 0 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 15px;
+  }
+
+  .login {
+    margin: 5vh auto;
+    padding: 25px 19px;
+  }
+
+  header {
+    padding: 15px;
+  }
+
+  .brand {
+    font-size: 16px;
+  }
+
+  #appView > .card:first-child {
+    padding: 21px;
+  }
+
+  button {
+    padding: 10px 13px;
+  }
+
+  .actions button {
+    flex: 1 1 auto;
+  }
+
+  #schoolStatsPanel > .grid .item {
+    min-height: 90px;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+}
+
 </style>
 </head>
 <body>
