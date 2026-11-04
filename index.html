@@ -202,6 +202,7 @@ $('uploadForm').addEventListener('submit',async e=>{
   $('uploadBtn').disabled=true;
   setStatus('uploadStatus','جارٍ رفع الملف وحفظ بيانات الشاهد...');
 const filePath = `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
+  console.log("UPLOAD PATH:", filePath);
   try{
     const {error:storageError}=await supabase.storage.from(BUCKET).upload(filePath,file,{upsert:false,contentType:file.type||undefined});
     if(storageError)throw storageError;
