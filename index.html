@@ -421,10 +421,18 @@ $('schoolOverallDetails').textContent =
     </head>
     <body>
       <div class="header">
-        <h1>تقرير إحصائيات التقييم الذاتي</h1>
-        <div>متوسطة عباد بن بشر</div>
-        <div class="date">تاريخ التقرير: ${escapeHtml(date)}</div>
-      </div>
+  <div class="report-head">
+    <div class="logo-placeholder">شعار<br>وزارة التعليم</div>
+
+    <div class="report-title">
+      <h1>تقرير إحصائيات التقييم الذاتي</h1>
+      <strong>متوسطة عباد بن بشر</strong>
+      <div class="date">تاريخ التقرير: ${escapeHtml(date)}</div>
+    </div>
+
+    <div class="logo-placeholder">مكان<br>شعار المدرسة</div>
+  </div>
+</div>
 
       <h2>ملخص الشواهد</h2>
       <div class="summary">
