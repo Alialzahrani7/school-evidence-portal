@@ -201,7 +201,9 @@ $('uploadForm').addEventListener('submit',async e=>{
   if(!title||!categoryId){setStatus('uploadStatus','أكمل المجال والتصنيف وعنوان الشاهد.','error');return;}
   $('uploadBtn').disabled=true;
   setStatus('uploadStatus','جارٍ رفع الملف وحفظ بيانات الشاهد...');
-  const cleanName=file.name.replace(/[^\p{L}\p{N}._-]+/gu,'_').slice(-100);
+const ext = (file.name.split('.').pop() || 'bin').toLowerCase();
+const safeExt = /^[a-z0-9]{1,10}$/.test(ext) ? ext : 'bin';
+const filePath = `${currentUser.id}/${crypto.randomUUID()}.${safeExt}`;
   const filePath=`${currentUser.id}/${crypto.randomUUID()}_${cleanName}`;
   try{
     const {error:storageError}=await supabase.storage.from(BUCKET).upload(filePath,file,{upsert:false,contentType:file.type||undefined});
