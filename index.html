@@ -212,6 +212,63 @@ async function loadReferenceData(){
   domains=d.data||[]; categories=c.data||[];
   $('domainSelect').innerHTML='<option value="">اختر المجال</option>'+domains.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`).join('');
 }
+  
+async function loadSchoolStats(){
+  $('statsStatus').textContent = 'جارٍ تحديث إحصائيات المدرسة...';
+
+  const {data,error} = await supabase.rpc('get_school_evidence_stats');
+
+  if(error){
+    $('statsStatus').textContent =
+      'تعذر تحميل الإحصائيات: ' + error.message;
+    return;
+  }
+
+  $('statTotal').textContent = data.total ?? 0;
+  $('statApproved').textContent = data.approved ?? 0;
+  $('statPending').textContent = data.pending ?? 0;
+  $('statRejected').textContent = data.rejected ?? 0;
+
+  const domains = data.domains || [];
+
+  if(!domains.length){
+    $('domainStats').innerHTML =
+      '<p class="muted">لا توجد مجالات تقييم مسجلة.</p>';
+    $('statsStatus').textContent = '';
+    return;
+  }
+
+  $('domainStats').innerHTML = domains.map(d => {
+    const percentage = Math.min(100, Math.max(0, Number(d.percentage) || 0));
+
+    return `
+      <article class="item">
+        <div class="item-top">
+          <h3>${escapeHtml(d.name)}</h3>
+          <strong>${percentage}%</strong>
+        </div>
+        <div style="height:13px;background:#e8eff3;border-radius:20px;overflow:hidden;margin:12px 0">
+          <div style="
+            width:${percentage}%;
+            height:100%;
+            background:#167c80;
+            border-radius:20px;
+            transition:width .3s">
+          </div>
+        </div>
+        <div class="muted">
+          التصنيفات المنجزة: ${d.completed} من ${d.target}
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  $('statsStatus').textContent =
+    'تم تحديث إحصائيات المدرسة بنجاح.';
+}
+
+$('refreshStatsBtn').addEventListener('click',loadSchoolStats);
+
 $('domainSelect').addEventListener('change',()=>{
   const domainId=$('domainSelect').value;
   const filtered=categories.filter(c=>c.domain_id===domainId);
