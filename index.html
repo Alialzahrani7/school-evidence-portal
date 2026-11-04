@@ -71,8 +71,47 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
 
 <section id="appView" class="hidden">
   <div class="card">
-    <div class="item-top"><div><h1 id="welcomeTitle">مرحبًا</h1><div class="muted" id="roleLabel"></div></div><span class="pill approved">حساب معتمد</span></div>
+  <div class="item-top"><div><h1 id="welcomeTitle">مرحبًا</h1><div class="muted" id="roleLabel"></div></div><span class="pill approved">حساب معتمد</span>
   </div>
+  </div>
+
+  
+<section id="schoolStatsPanel" class="card">
+  <div class="item-top">
+    <div>
+      <h2>إحصائيات شواهد المدرسة</h2>
+      <div class="muted">مؤشرات الإنجاز لجميع مجالات التقييم الذاتي</div>
+    </div>
+    <button id="refreshStatsBtn" class="secondary">تحديث الإحصائيات</button>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="item">
+      <div class="muted">إجمالي الشواهد</div>
+      <h1 id="statTotal">—</h1>
+    </div>
+    <div class="item">
+      <div class="muted">الشواهد المعتمدة</div>
+      <h1 id="statApproved" style="color:#087443">—</h1>
+    </div>
+    <div class="item">
+      <div class="muted">قيد المراجعة</div>
+      <h1 id="statPending" style="color:#8a5a00">—</h1>
+    </div>
+    <div class="item">
+      <div class="muted">الشواهد المرفوضة</div>
+      <h1 id="statRejected" style="color:#b42318">—</h1>
+    </div>
+  </div>
+
+  <hr>
+  <h2>نسبة إنجاز مجالات التقييم</h2>
+  <div id="domainStats">
+    <div class="muted">جارٍ تحميل الإحصائيات...</div>
+  </div>
+  <div id="statsStatus" class="muted"></div>
+</section>
+
 
   <section id="teacherApprovalPanel" class="card hidden">
     <div class="item-top"><div><h2>طلبات اعتماد المعلمين</h2><div class="muted">الحسابات الجديدة التي تنتظر موافقة قائد المدرسة</div></div><button id="refreshTeachersBtn" class="secondary">تحديث الطلبات</button></div>
