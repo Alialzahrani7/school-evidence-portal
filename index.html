@@ -409,12 +409,14 @@ async function reviewEvidence(id,status){
     review_status:status,reviewer_notes:note,
     reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()
   }).eq('id',id);
+
   if(error){alert('تعذر حفظ المراجعة: '+error.message);btns.forEach(b=>b.disabled=false);return;}
   await loadEvidence();
   await loadSchoolStats();
 }
 
 $('refreshBtn').addEventListener('click',loadEvidence);
+  $('refreshStatsBtn').addEventListener('click',loadSchoolStats);
 $('refreshTeachersBtn').addEventListener('click',loadPendingTeachers);
 $('logoutBtn').addEventListener('click',async()=>{
   $('logoutBtn').disabled=true;
