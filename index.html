@@ -411,6 +411,7 @@ async function reviewEvidence(id,status){
   }).eq('id',id);
   if(error){alert('تعذر حفظ المراجعة: '+error.message);btns.forEach(b=>b.disabled=false);return;}
   await loadEvidence();
+  await loadSchoolStats();
 }
 
 $('refreshBtn').addEventListener('click',loadEvidence);
