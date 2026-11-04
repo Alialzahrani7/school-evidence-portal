@@ -237,7 +237,16 @@ async function loadSchoolStats(){
   $('statRejected').textContent = data.rejected ?? 0;
 
   const domains = data.domains || [];
+const totalTargets = domains.reduce((sum,d)=>sum+Number(d.target||0),0);
+const completedTargets = domains.reduce((sum,d)=>sum+Number(d.completed||0),0);
 
+const overall = totalTargets
+  ? Math.round(completedTargets / totalTargets * 100)
+  : 0;
+
+$('schoolOverallPercentage').textContent = overall + '%';
+$('schoolOverallDetails').textContent =
+  `${completedTargets} من ${totalTargets} تصنيفًا لديها شاهد معتمد`;
   if(!domains.length){
     $('domainStats').innerHTML =
       '<p class="muted">لا توجد مجالات تقييم مسجلة.</p>';
