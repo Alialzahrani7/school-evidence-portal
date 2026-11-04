@@ -201,6 +201,7 @@ async function startApp(user){
   await loadSchoolStats();
   if(isAdmin) await loadPendingTeachers();
   await loadEvidence();
+  await loadSchoolStats();
 }
 
 async function loadReferenceData(){
