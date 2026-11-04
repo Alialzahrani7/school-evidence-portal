@@ -82,7 +82,7 @@ hr{border:0;border-top:1px solid var(--line);margin:18px 0}
       <h2>إحصائيات شواهد المدرسة</h2>
       <div class="muted">مؤشرات الإنجاز لجميع مجالات التقييم الذاتي</div>
     </div>
-    <button id="refreshStatsBtn" class="secondary">تحديث الإحصائيات</button>
+    <div class="actions" style="margin:0">   <button id="refreshStatsBtn" class="secondary">تحديث الإحصائيات</button>   <button id="exportStatsBtn" class="success hidden">تصدير تقرير PDF</button> </div>
   </div>
 
   <div class="grid" style="margin-top:16px">
@@ -160,6 +160,7 @@ let currentUser = null;
 let currentProfile = null;
 let domains = [];
 let categories = [];
+  let lastSchoolStats = null;
 
 function showOnly(id){
   ['loginView','pendingView','rejectedView','appView'].forEach(x => $(x).classList.toggle('hidden',x!==id));
@@ -198,6 +199,7 @@ async function startApp(user){
   showOnly('appView');
   $('welcomeTitle').textContent='مرحبًا '+(profile.full_name||user.email||'');
   const isAdmin=['school_leader','system_admin'].includes(profile.role);
+  $('exportStatsBtn').classList.toggle('hidden', !isAdmin);
   $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
   $('teacherPanel').classList.toggle('hidden',isAdmin);
   $('teacherApprovalPanel').classList.toggle('hidden',!isAdmin);
@@ -230,7 +232,7 @@ async function loadSchoolStats(){
       'تعذر تحميل الإحصائيات: ' + error.message;
     return;
   }
-
+  lastSchoolStats = data;
   $('statTotal').textContent = data.total ?? 0;
   $('statApproved').textContent = data.approved ?? 0;
   $('statPending').textContent = data.pending ?? 0;
@@ -282,6 +284,207 @@ $('schoolOverallDetails').textContent =
   $('statsStatus').textContent =
     'تم تحديث إحصائيات المدرسة بنجاح.';
 }
+  function exportSchoolStatsPDF() {
+  if (!lastSchoolStats) {
+    alert('يرجى تحديث الإحصائيات أولاً.');
+    return;
+  }
+
+  const data = lastSchoolStats;
+  const domainData = data.domains || [];
+
+  const totalTargets = domainData.reduce(
+    (sum, d) => sum + Number(d.target || 0), 0
+  );
+
+  const completedTargets = domainData.reduce(
+    (sum, d) => sum + Number(d.completed || 0), 0
+  );
+
+  const overall = totalTargets
+    ? Math.round(completedTargets / totalTargets * 100)
+    : 0;
+
+  const date = new Date().toLocaleDateString('ar-SA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const domainRows = domainData.map(d => {
+    const percentage = Math.min(
+      100,
+      Math.max(0, Number(d.percentage) || 0)
+    );
+
+    return `
+      <tr>
+        <td>${escapeHtml(d.name)}</td>
+        <td>${Number(d.completed || 0)}</td>
+        <td>${Number(d.target || 0)}</td>
+        <td>${percentage}%</td>
+      </tr>
+    `;
+  }).join('');
+
+  const reportWindow = window.open('', '_blank');
+
+  if (!reportWindow) {
+    alert('تعذر فتح نافذة التقرير. يرجى السماح بالنوافذ المنبثقة للموقع.');
+    return;
+  }
+
+  reportWindow.document.open();
+  reportWindow.document.write(`
+    <!doctype html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="utf-8">
+      <title>تقرير إحصائيات التقييم الذاتي</title>
+      <style>
+        * { box-sizing: border-box; }
+        body {
+          font-family: Tahoma, Arial, sans-serif;
+          color: #1e293b;
+          margin: 35px;
+          line-height: 1.8;
+        }
+        .header {
+          text-align: center;
+          border-bottom: 3px solid #15324b;
+          padding-bottom: 18px;
+          margin-bottom: 25px;
+        }
+        h1 { color: #15324b; font-size: 23px; margin: 0; }
+        h2 { color: #167c80; font-size: 19px; margin-top: 28px; }
+        .date { color: #64748b; font-size: 13px; }
+        .summary {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          margin: 20px 0;
+        }
+        .box {
+          border: 1px solid #dbe3e8;
+          border-radius: 10px;
+          padding: 14px;
+          text-align: center;
+        }
+        .box strong {
+          display: block;
+          font-size: 25px;
+          color: #15324b;
+        }
+        .overall {
+          background: #eaf4f3;
+          border: 1px solid #b8d9d6;
+          border-radius: 12px;
+          text-align: center;
+          padding: 18px;
+          margin: 20px 0;
+        }
+        .overall strong {
+          display: block;
+          color: #167c80;
+          font-size: 36px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 12px;
+        }
+        th, td {
+          border: 1px solid #dbe3e8;
+          padding: 10px;
+          text-align: center;
+          font-size: 13px;
+        }
+        th {
+          background: #15324b;
+          color: white;
+        }
+        tr:nth-child(even) { background: #f3f7f8; }
+        .footer {
+          margin-top: 35px;
+          padding-top: 12px;
+          border-top: 1px solid #dbe3e8;
+          color: #64748b;
+          font-size: 12px;
+          text-align: center;
+        }
+        @page { size: A4; margin: 15mm; }
+        @media print {
+          body { margin: 0; }
+          tr { page-break-inside: avoid; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>تقرير إحصائيات التقييم الذاتي</h1>
+        <div>متوسطة عباد بن بشر</div>
+        <div class="date">تاريخ التقرير: ${escapeHtml(date)}</div>
+      </div>
+
+      <h2>ملخص الشواهد</h2>
+      <div class="summary">
+        <div class="box">
+          إجمالي الشواهد
+          <strong>${Number(data.total || 0)}</strong>
+        </div>
+        <div class="box">
+          الشواهد المعتمدة
+          <strong>${Number(data.approved || 0)}</strong>
+        </div>
+        <div class="box">
+          قيد المراجعة
+          <strong>${Number(data.pending || 0)}</strong>
+        </div>
+        <div class="box">
+          الشواهد المرفوضة
+          <strong>${Number(data.rejected || 0)}</strong>
+        </div>
+      </div>
+
+      <div class="overall">
+        نسبة الإنجاز الإجمالية للمدرسة
+        <strong>${overall}%</strong>
+        ${completedTargets} من ${totalTargets} تصنيفًا لديها شاهد معتمد
+      </div>
+
+      <h2>تفاصيل إنجاز مجالات التقييم</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>مجال التقييم</th>
+            <th>التصنيفات المنجزة</th>
+            <th>إجمالي التصنيفات</th>
+            <th>نسبة الإنجاز</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${domainRows || '<tr><td colspan="4">لا توجد بيانات</td></tr>'}
+        </tbody>
+      </table>
+
+      <div class="footer">
+        بوابة شواهد التقييم الذاتي – متوسطة عباد بن بشر
+      </div>
+
+      <script>
+        window.onload = function() {
+          setTimeout(function() {
+            window.print();
+          }, 500);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  reportWindow.document.close();
+}
+
+$('exportStatsBtn').addEventListener('click', exportSchoolStatsPDF);
 
 $('refreshStatsBtn').addEventListener('click',loadSchoolStats);
 
