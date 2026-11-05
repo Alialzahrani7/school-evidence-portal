@@ -1137,7 +1137,13 @@ $('rejectedEvidenceTab').addEventListener('click',async()=>{
 });
 
 $('refreshRejectedBtn').addEventListener('click',loadRejectedEvidence);
-$('refreshBtn').addEventListener('click',loadEvidence);
+$('refreshBtn').addEventListener('click',async()=>{
+  await loadEvidence();
+
+  if(['school_leader','system_admin'].includes(currentProfile?.role)){
+    await loadRejectedEvidence();
+  }
+});
   $('refreshStatsBtn').addEventListener('click',loadSchoolStats);
 $('refreshTeachersBtn').addEventListener('click',loadPendingTeachers);
 $('logoutBtn').addEventListener('click',async()=>{
