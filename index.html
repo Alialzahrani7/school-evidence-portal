@@ -512,12 +512,26 @@ hr {
       <div class="actions"><button id="uploadBtn" type="submit">رفع الشاهد</button></div>
       <div id="uploadStatus" class="status">الصيغ المسموحة: PDF وJPG وPNG وWEBP وDOCX وPPTX وXLSX.</div>
     </form>
-  </section>
+  </section><section class="card" id="evidencePanel">
+  <div class="item-top">
+    <h2 id="listTitle">الشواهد</h2>
+    <div class="actions" style="margin:0">
+      <button id="currentEvidenceTab" class="secondary">الشواهد الحالية</button>
+      <button id="rejectedEvidenceTab" class="danger hidden">سجل الشواهد المرفوضة</button>
+      <button id="refreshBtn" class="secondary">تحديث القائمة</button>
+    </div>
+  </div>
+  <div id="evidenceList" class="muted">جارٍ تحميل الشواهد...</div>
+</section>
 
-  <section class="card">
-    <div class="item-top"><h2 id="listTitle">الشواهد</h2><button id="refreshBtn" class="secondary">تحديث القائمة</button></div>
-    <div id="evidenceList" class="muted">جارٍ تحميل الشواهد...</div>
-  </section>
+<section class="card hidden" id="rejectedEvidencePanel">
+  <div class="item-top">
+    <h2>سجل الشواهد المرفوضة</h2>
+    <button id="refreshRejectedBtn" class="secondary">تحديث السجل</button>
+  </div>
+  <p class="muted">هذا السجل متاح لقائد المدرسة للاطلاع على الشواهد التي سبق رفضها.</p>
+  <div id="rejectedEvidenceList" class="muted">جارٍ تحميل السجل...</div>
+</section>
 </section>
 </main>
 
