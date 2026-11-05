@@ -547,8 +547,48 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const $ = id => document.getElementById(id);
 let currentUser = null;
 let currentProfile = null;
+let currentPermissions = {};
 let domains = [];
 let categories = [];
+let lastSchoolStats = null;
+
+const PERMISSION_LABELS = {
+  view_all_evidence: 'مشاهدة جميع الشواهد',
+  upload_evidence: 'رفع الشواهد',
+  review_evidence: 'مراجعة الشواهد',
+  delete_evidence: 'حذف الشواهد',
+  view_rejected: 'مشاهدة الشواهد المرفوضة',
+  view_reports: 'مشاهدة التقارير',
+  manage_accounts: 'إدارة الحسابات',
+  manage_permissions: 'إدارة الصلاحيات'
+};
+
+function can(permission) {
+  return currentProfile?.role === 'system_admin'
+    || currentPermissions[permission] === true;
+}
+
+async function loadUserPermissions(userId) {
+  if (currentProfile?.role === 'system_admin') {
+    currentPermissions = Object.fromEntries(
+      Object.keys(PERMISSION_LABELS).map(key => [key, true])
+    );
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('user_permissions')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) throw error;
+
+  currentPermissions = {};
+  Object.keys(PERMISSION_LABELS).forEach(key => {
+    currentPermissions[key] = data?.[key] === true;
+  });
+}
   let lastSchoolStats = null;
 
 function showOnly(id){
@@ -589,7 +629,19 @@ async function startApp(user){
     return;
   }
 
-  currentProfile=profile;
+currentProfile = profile;
+
+try {
+  await loadUserPermissions(user.id);
+} catch (error) {
+  showOnly('loginView');
+  setStatus(
+    'loginStatus',
+    'تعذر تحميل صلاحيات الحساب: ' + error.message,
+    'error'
+  );
+  return;
+}
 
   if(profile.account_status!=='approved'){
     showOnly(profile.account_status==='rejected'?'rejectedView':'pendingView');
@@ -601,7 +653,15 @@ async function startApp(user){
 
   $('welcomeTitle').textContent='مرحبًا '+(profile.full_name||user.email||'');
 
-  const isAdmin=['school_leader','system_admin'].includes(profile.role);
+const isSystemAdmin = profile.role === 'system_admin';
+const canManagePermissions = can('manage_permissions');
+const canManageAccounts =
+  isSystemAdmin ||
+  (profile.role === 'school_leader' && can('manage_accounts'));
+
+const canReview = can('review_evidence');
+const canViewAll = can('view_all_evidence');
+const isAdmin = isSystemAdmin || profile.role === 'school_leader';
 
   $('exportStatsBtn').classList.toggle('hidden', !isAdmin);
   $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
