@@ -498,6 +498,39 @@ hr {
     <div id="teacherRequestsList" class="muted">جارٍ تحميل طلبات الاعتماد...</div>
   </section>
 
+<section id="permissionsPanel" class="card hidden">
+  <div class="item-top">
+    <div>
+      <h2>إدارة صلاحيات الموظفين</h2>
+      <div class="muted">تحديد صلاحيات كل موظف بشكل مستقل</div>
+    </div>
+    <button id="refreshPermissionsBtn" class="secondary" type="button">
+      تحديث الموظفين
+    </button>
+  </div>
+
+  <label for="permissionUserSelect">اختر الموظف</label>
+  <select id="permissionUserSelect">
+    <option value="">اختر الموظف</option>
+  </select>
+
+  <div id="permissionOptions" class="grid" style="margin-top:16px">
+    <label><input type="checkbox" data-permission="upload_evidence"> رفع الشواهد</label>
+    <label><input type="checkbox" data-permission="view_all_evidence"> مشاهدة جميع الشواهد</label>
+    <label><input type="checkbox" data-permission="review_evidence"> مراجعة الشواهد</label>
+    <label><input type="checkbox" data-permission="delete_evidence"> حذف الشواهد</label>
+    <label><input type="checkbox" data-permission="view_rejected"> مشاهدة المرفوضات</label>
+    <label><input type="checkbox" data-permission="view_reports"> مشاهدة التقارير</label>
+    <label><input type="checkbox" data-permission="manage_accounts"> إدارة الحسابات</label>
+    <label><input type="checkbox" data-permission="manage_permissions"> إدارة الصلاحيات</label>
+  </div>
+
+  <div class="actions">
+    <button id="savePermissionsBtn" type="button">حفظ الصلاحيات</button>
+  </div>
+  <div id="permissionsStatus" class="status"></div>
+</section>
+
   <section id="teacherPanel" class="card hidden">
     <h2>رفع شاهد جديد</h2>
     <form id="uploadForm">
