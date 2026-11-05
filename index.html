@@ -1125,7 +1125,18 @@ async function reviewEvidence(id,status){
   await loadEvidence();
   await loadSchoolStats();
 }
+$('currentEvidenceTab').addEventListener('click',()=>{
+  $('evidencePanel').classList.remove('hidden');
+  $('rejectedEvidencePanel').classList.add('hidden');
+});
 
+$('rejectedEvidenceTab').addEventListener('click',async()=>{
+  $('evidencePanel').classList.add('hidden');
+  $('rejectedEvidencePanel').classList.remove('hidden');
+  await loadRejectedEvidence();
+});
+
+$('refreshRejectedBtn').addEventListener('click',loadRejectedEvidence);
 $('refreshBtn').addEventListener('click',loadEvidence);
   $('refreshStatsBtn').addEventListener('click',loadSchoolStats);
 $('refreshTeachersBtn').addEventListener('click',loadPendingTeachers);
