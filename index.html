@@ -674,8 +674,7 @@ try {
     'error'
   );
   return;
-}
-  catch (error) {
+}  catch (error) {
   showOnly('loginView');
   setStatus(
     'loginStatus',
@@ -721,6 +720,93 @@ const isAdmin = isSystemAdmin || profile.role === 'school_leader';
   if(isAdmin){
     await loadPendingTeachers();
   }
+  
+async function loadPermissionUsers() {
+  const select = $('permissionUserSelect');
+  select.innerHTML = '<option value="">جارٍ تحميل الموظفين...</option>';
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, role')
+    .eq('role', 'teacher')
+    .eq('account_status', 'approved')
+    .order('full_name');
+
+  if (error) {
+    select.innerHTML = '<option value="">تعذر تحميل الموظفين</option>';
+    $('permissionsStatus').textContent = error.message;
+    return;
+  }
+
+  select.innerHTML = '<option value="">اختر الموظف</option>';
+
+  (data || []).forEach(user => {
+    const option = document.createElement('option');
+    option.value = user.id;
+    option.textContent = user.full_name || user.email || user.id;
+    select.appendChild(option);
+  });
+}
+
+async function loadSelectedUserPermissions() {
+  const userId = $('permissionUserSelect').value;
+  const checkboxes = document.querySelectorAll('[data-permission]');
+
+  checkboxes.forEach(box => box.checked = false);
+  $('permissionsStatus').textContent = '';
+
+  if (!userId) return;
+
+  const { data, error } = await supabase
+    .from('user_permissions')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) {
+    $('permissionsStatus').textContent =
+      'تعذر تحميل الصلاحيات: ' + error.message;
+    return;
+  }
+
+  checkboxes.forEach(box => {
+    box.checked = data?.[box.dataset.permission] === true;
+  });
+}
+
+async function saveSelectedUserPermissions() {
+  const userId = $('permissionUserSelect').value;
+
+  if (!userId) {
+    $('permissionsStatus').textContent = 'اختر الموظف أولاً.';
+    return;
+  }
+
+  const permissions = {};
+
+  document.querySelectorAll('[data-permission]').forEach(box => {
+    permissions[box.dataset.permission] = box.checked;
+  });
+
+  $('savePermissionsBtn').disabled = true;
+  $('permissionsStatus').textContent = 'جارٍ حفظ الصلاحيات...';
+
+  const { error } = await supabase.rpc('set_user_permissions', {
+    target_user_id: userId,
+    new_permissions: permissions
+  });
+
+  $('savePermissionsBtn').disabled = false;
+
+  if (error) {
+    $('permissionsStatus').textContent =
+      'فشل حفظ الصلاحيات: ' + error.message;
+    return;
+  }
+
+  $('permissionsStatus').textContent = 'تم حفظ الصلاحيات بنجاح.';
+}
+
 
   await loadEvidence();
 
@@ -1080,22 +1166,6 @@ const filePath = `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
   finally{$('uploadBtn').disabled=false;}
 });
 
-async function loadPendingTeachers(){
-  $('teacherRequestsList').textContent='جارٍ تحميل طلبات الاعتماد...';
-  const {data,error}=await supabase.from('profiles')
-    .select('id,full_name,email,created_at')
-    .eq('account_status','pending')
-    .order('created_at',{ascending:false});
-  if(error){$('teacherRequestsList').textContent='تعذر تحميل الطلبات: '+error.message;return;}
-  if(!data?.length){$('teacherRequestsList').textContent='لا توجد حسابات بانتظار الاعتماد.';return;}
-  $('teacherRequestsList').innerHTML=data.map(p=>{
-    const name=escapeHtml(p.full_name||'موظف جديد');
-    const email=escapeHtml(p.email||'');
-    const created=p.created_at?new Date(p.created_at).toLocaleString('ar-SA'):'';
-    return `<article class="item"><div class="item-top"><h3>${name}</h3><span class="pill pending">بانتظار الاعتماد</span></div><p>البريد الإلكتروني: ${email}</p><p>تاريخ التسجيل: ${escapeHtml(created)}</p><div class="actions"><button class="success" data-teacher-action="approve" data-teacher-id="${p.id}">اعتماد الحساب</button><button class="danger" data-teacher-action="reject" data-teacher-id="${p.id}">رفض الحساب</button></div></article>`;
-  }).join('');
-  $('teacherRequestsList').querySelectorAll('[data-teacher-action]').forEach(btn=>btn.addEventListener('click',()=>reviewTeacherAccount(btn.dataset.teacherId,btn.dataset.teacherAction)));
-}
 
 async function reviewTeacherAccount(userId,action){
   const label=action==='approve'?'اعتماد هذا الحساب؟':'رفض هذا الحساب؟';
