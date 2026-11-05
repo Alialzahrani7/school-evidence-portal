@@ -572,41 +572,62 @@ async function loadProfile(user){
 async function startApp(user){
   currentUser=user;
   $('userLabel').textContent=user.email||'';
+
   let profile;
-  try{profile=await loadProfile(user)}catch(e){
-    showOnly('loginView'); setStatus('loginStatus','تعذر قراءة ملف المستخدم: '+e.message,'error'); return;
+
+  try{
+    profile=await loadProfile(user);
+  }catch(e){
+    showOnly('loginView');
+    setStatus('loginStatus','تعذر قراءة ملف المستخدم: '+e.message,'error');
+    return;
   }
+
   if(!profile){
-    showOnly('pendingView'); $('pendingEmail').textContent=user.email||''; return;
+    showOnly('pendingView');
+    $('pendingEmail').textContent=user.email||'';
+    return;
   }
+
   currentProfile=profile;
+
   if(profile.account_status!=='approved'){
     showOnly(profile.account_status==='rejected'?'rejectedView':'pendingView');
     $('pendingEmail').textContent=user.email||'';
     return;
   }
+
   showOnly('appView');
+
   $('welcomeTitle').textContent='مرحبًا '+(profile.full_name||user.email||'');
+
   const isAdmin=['school_leader','system_admin'].includes(profile.role);
+
   $('exportStatsBtn').classList.toggle('hidden', !isAdmin);
   $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
   $('teacherPanel').classList.toggle('hidden',isAdmin);
   $('teacherApprovalPanel').classList.toggle('hidden',!isAdmin);
   $('listTitle').textContent=isAdmin?'جميع الشواهد ومراجعتها':'شواهدي المرفوعة';
+
   $('rejectedEvidenceTab').classList.toggle('hidden', !isAdmin);
-$('currentEvidenceTab').classList.remove('hidden');
-$('evidencePanel').classList.remove('hidden');
-$('rejectedEvidencePanel').classList.add('hidden');
+  $('currentEvidenceTab').classList.remove('hidden');
+  $('evidencePanel').classList.remove('hidden');
+  $('rejectedEvidencePanel').classList.add('hidden');
+
   await loadReferenceData();
+
+  if(isAdmin){
+    await loadPendingTeachers();
+  }
+
+  await loadEvidence();
+
+  if(isAdmin){
+    await loadRejectedEvidence();
+  }
+
+  // تحديث الإحصائيات مرة واحدة فقط
   await loadSchoolStats();
-  if(isAdmin) await loadPendingTeachers();
-await loadEvidence();
-
-if(isAdmin) {
-  await loadRejectedEvidence();
-}
-
-await loadSchoolStats();
 }
 
 async function loadReferenceData(){
@@ -1031,8 +1052,9 @@ let query=supabase.from('evidence_uploads')
 }
 
 
+
 async function openEvidence(item){
-  if(!item)return;
+  if(!item) return;
 
   const {data,error}=await supabase.storage
     .from(BUCKET)
@@ -1047,11 +1069,14 @@ async function openEvidence(item){
 }
 
 async function loadRejectedEvidence(){
-  if(!['school_leader','system_admin'].includes(currentProfile?.role)) return;
+  if(!['school_leader','system_admin'].includes(currentProfile?.role)){
+    return;
+  }
 
   $('rejectedEvidenceList').textContent='جارٍ تحميل الشواهد المرفوضة...';
 
-  const {data,error}=await supabase.from('evidence_uploads')
+  const {data,error}=await supabase
+    .from('evidence_uploads')
     .select('id,user_id,category_id,title,description,file_path,file_name,review_status,reviewer_notes,created_at,reviewed_at')
     .eq('review_status','rejected')
     .order('reviewed_at',{ascending:false});
@@ -1084,58 +1109,8 @@ async function loadRejectedEvidence(){
   $('rejectedEvidenceList').innerHTML=data.map(item=>{
     const owner=profileMap.get(item.user_id);
     const created=item.created_at
-      ?new Date(item.created_at).toLocaleString('ar-SA'):'';
-
-    return `
-      <article class="item">
-        <div class="item-top">
-          <h3>${escapeHtml(item.title)}</h3>
-          ${statusPill('rejected')}
-        </div>
-        <p>المعلم: ${escapeHtml(owner?.full_name||owner?.email||'غير معروف')}</p>
-        <p>التصنيف: ${escapeHtml(categoryMap.get(item.category_id)||'غير محدد')}</p>
-        <p>الملف: ${escapeHtml(item.file_name)}</p>
-        <p>تاريخ الرفع: ${escapeHtml(created)}</p>
-        ${item.description?`<p>الوصف: ${escapeHtml(item.description)}</p>`:''}
-        ${item.reviewer_notes
-          ?`<p>سبب الرفض أو ملاحظات المراجع: ${escapeHtml(item.reviewer_notes)}</p>`
-          :'<p class="muted">لم تُسجل ملاحظات للرفض.</p>'}
-        <div class="actions">
-          <button class="secondary" data-open-rejected="${item.id}">فتح الملف</button>
-        </div>
-      </article>
-    `;
-  }).join('');
-
-  $('rejectedEvidenceList').querySelectorAll('[data-open-rejected]')
-    .forEach(btn=>{
-      btn.addEventListener('click',()=>{
-        const item=data.find(x=>x.id===btn.dataset.openRejected);
-        openEvidence(item);
-      });
-    });
-}
-
-
-  const userIds=[...new Set(data.map(x=>x.user_id))];
-
-  const {data:profiles,error:profilesError}=await supabase
-    .from('profiles')
-    .select('id,full_name,email')
-    .in('id',userIds);
-
-  if(profilesError){
-    $('rejectedEvidenceList').textContent='تعذر تحميل بيانات المعلمين: '+profilesError.message;
-    return;
-  }
-
-  const profileMap=new Map((profiles||[]).map(p=>[p.id,p]));
-  const categoryMap=new Map(categories.map(c=>[c.id,c.name]));
-
-  $('rejectedEvidenceList').innerHTML=data.map(item=>{
-    const owner=profileMap.get(item.user_id);
-    const created=item.created_at
-      ?new Date(item.created_at).toLocaleString('ar-SA'):'';
+      ?new Date(item.created_at).toLocaleString('ar-SA')
+      :'';
 
     return `
       <article class="item">
@@ -1150,7 +1125,8 @@ async function loadRejectedEvidence(){
         <p>تاريخ الرفع: ${escapeHtml(created)}</p>
 
         ${item.description
-          ?`<p>الوصف: ${escapeHtml(item.description)}</p>`:''}
+          ?`<p>الوصف: ${escapeHtml(item.description)}</p>`
+          :''}
 
         ${item.reviewer_notes
           ?`<p>سبب الرفض أو ملاحظات المراجع: ${escapeHtml(item.reviewer_notes)}</p>`
@@ -1165,7 +1141,8 @@ async function loadRejectedEvidence(){
     `;
   }).join('');
 
-  $('rejectedEvidenceList').querySelectorAll('[data-open-rejected]')
+  $('rejectedEvidenceList')
+    .querySelectorAll('[data-open-rejected]')
     .forEach(btn=>{
       btn.addEventListener('click',()=>{
         const item=data.find(x=>x.id===btn.dataset.openRejected);
@@ -1173,20 +1150,40 @@ async function loadRejectedEvidence(){
       });
     });
 }
-}
+
 async function reviewEvidence(id,status){
   const note=$('note-'+id)?.value.trim()||null;
-  const btns=[...$('evidenceList').querySelectorAll(`[data-id="${id}"]`)];
-  btns.forEach(b=>b.disabled=true);
-  const {error}=await supabase.from('evidence_uploads').update({
-    review_status:status,reviewer_notes:note,
-    reviewed_by:currentUser.id,reviewed_at:new Date().toISOString()
-  }).eq('id',id);
 
-  if(error){alert('تعذر حفظ المراجعة: '+error.message);btns.forEach(b=>b.disabled=false);return;}
+  const btns=[
+    ...$('evidenceList').querySelectorAll(`[data-id="${id}"]`)
+  ];
+
+  btns.forEach(b=>b.disabled=true);
+
+  const {error}=await supabase
+    .from('evidence_uploads')
+    .update({
+      review_status:status,
+      reviewer_notes:note,
+      reviewed_by:currentUser.id,
+      reviewed_at:new Date().toISOString()
+    })
+    .eq('id',id);
+
+  if(error){
+    alert('تعذر حفظ المراجعة: '+error.message);
+    btns.forEach(b=>b.disabled=false);
+    return;
+  }
+
   await loadEvidence();
   await loadSchoolStats();
+
+  if(['school_leader','system_admin'].includes(currentProfile?.role)){
+    await loadRejectedEvidence();
+  }
 }
+
 $('currentEvidenceTab').addEventListener('click',()=>{
   $('evidencePanel').classList.remove('hidden');
   $('rejectedEvidencePanel').classList.add('hidden');
