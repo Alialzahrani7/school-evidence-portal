@@ -589,7 +589,7 @@ async function loadUserPermissions(userId) {
     currentPermissions[key] = data?.[key] === true;
   });
 }
-  let lastSchoolStats = null;
+
 
 function showOnly(id){
   ['loginView','pendingView','rejectedView','appView'].forEach(x => $(x).classList.toggle('hidden',x!==id));
@@ -634,6 +634,15 @@ currentProfile = profile;
 try {
   await loadUserPermissions(user.id);
 } catch (error) {
+  showOnly('loginView');
+  setStatus(
+    'loginStatus',
+    'تعذر تحميل صلاحيات الحساب: ' + error.message,
+    'error'
+  );
+  return;
+}
+  catch (error) {
   showOnly('loginView');
   setStatus(
     'loginStatus',
