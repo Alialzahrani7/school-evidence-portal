@@ -989,9 +989,10 @@ async function reviewTeacherAccount(userId,action){
 async function loadEvidence(){
   $('evidenceList').textContent='جارٍ تحميل الشواهد...';
   const isAdmin=['school_leader','system_admin'].includes(currentProfile.role);
-  let query=supabase.from('evidence_uploads')
-    .select('id,user_id,category_id,title,description,file_path,file_name,review_status,reviewer_notes,created_at,reviewed_at')
-    .order('created_at',{ascending:false});
+let query=supabase.from('evidence_uploads')
+  .select('id,user_id,category_id,title,description,file_path,file_name,review_status,reviewer_notes,created_at,reviewed_at')
+  .neq('review_status','rejected')
+  .order('created_at',{ascending:false});
   if(!isAdmin)query=query.eq('user_id',currentUser.id);
   const {data,error}=await query;
   if(error){$('evidenceList').textContent='تعذر تحميل الشواهد: '+error.message;return;}
