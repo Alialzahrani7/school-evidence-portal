@@ -593,6 +593,10 @@ async function startApp(user){
   $('teacherPanel').classList.toggle('hidden',isAdmin);
   $('teacherApprovalPanel').classList.toggle('hidden',!isAdmin);
   $('listTitle').textContent=isAdmin?'جميع الشواهد ومراجعتها':'شواهدي المرفوعة';
+  $('rejectedEvidenceTab').classList.toggle('hidden', !isAdmin);
+$('currentEvidenceTab').classList.remove('hidden');
+$('evidencePanel').classList.remove('hidden');
+$('rejectedEvidencePanel').classList.add('hidden');
   await loadReferenceData();
   await loadSchoolStats();
   if(isAdmin) await loadPendingTeachers();
