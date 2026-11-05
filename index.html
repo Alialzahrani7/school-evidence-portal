@@ -1030,12 +1030,23 @@ let query=supabase.from('evidence_uploads')
   $('evidenceList').querySelectorAll('[data-review]').forEach(btn=>btn.addEventListener('click',()=>reviewEvidence(btn.dataset.id,btn.dataset.review)));
 }
 
+
 async function openEvidence(item){
   if(!item)return;
-  const {data,error}=await supabase.storage.from(BUCKET).createSignedUrl(item.file_path,300);
-  if(error){alert('تعذر فتح الملف: '+error.message);return;}
+
+  const {data,error}=await supabase.storage
+    .from(BUCKET)
+    .createSignedUrl(item.file_path,300);
+
+  if(error){
+    alert('تعذر فتح الملف: '+error.message);
+    return;
+  }
+
   window.open(data.signedUrl,'_blank','noopener,noreferrer');
-  async function loadRejectedEvidence(){
+}
+
+async function loadRejectedEvidence(){
   if(!['school_leader','system_admin'].includes(currentProfile?.role)) return;
 
   $('rejectedEvidenceList').textContent='جارٍ تحميل الشواهد المرفوضة...';
@@ -1054,6 +1065,57 @@ async function openEvidence(item){
     $('rejectedEvidenceList').textContent='لا توجد شواهد مرفوضة.';
     return;
   }
+
+  const userIds=[...new Set(data.map(x=>x.user_id))];
+
+  const {data:profiles,error:profilesError}=await supabase
+    .from('profiles')
+    .select('id,full_name,email')
+    .in('id',userIds);
+
+  if(profilesError){
+    $('rejectedEvidenceList').textContent='تعذر تحميل بيانات المعلمين: '+profilesError.message;
+    return;
+  }
+
+  const profileMap=new Map((profiles||[]).map(p=>[p.id,p]));
+  const categoryMap=new Map(categories.map(c=>[c.id,c.name]));
+
+  $('rejectedEvidenceList').innerHTML=data.map(item=>{
+    const owner=profileMap.get(item.user_id);
+    const created=item.created_at
+      ?new Date(item.created_at).toLocaleString('ar-SA'):'';
+
+    return `
+      <article class="item">
+        <div class="item-top">
+          <h3>${escapeHtml(item.title)}</h3>
+          ${statusPill('rejected')}
+        </div>
+        <p>المعلم: ${escapeHtml(owner?.full_name||owner?.email||'غير معروف')}</p>
+        <p>التصنيف: ${escapeHtml(categoryMap.get(item.category_id)||'غير محدد')}</p>
+        <p>الملف: ${escapeHtml(item.file_name)}</p>
+        <p>تاريخ الرفع: ${escapeHtml(created)}</p>
+        ${item.description?`<p>الوصف: ${escapeHtml(item.description)}</p>`:''}
+        ${item.reviewer_notes
+          ?`<p>سبب الرفض أو ملاحظات المراجع: ${escapeHtml(item.reviewer_notes)}</p>`
+          :'<p class="muted">لم تُسجل ملاحظات للرفض.</p>'}
+        <div class="actions">
+          <button class="secondary" data-open-rejected="${item.id}">فتح الملف</button>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  $('rejectedEvidenceList').querySelectorAll('[data-open-rejected]')
+    .forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const item=data.find(x=>x.id===btn.dataset.openRejected);
+        openEvidence(item);
+      });
+    });
+}
+
 
   const userIds=[...new Set(data.map(x=>x.user_id))];
 
