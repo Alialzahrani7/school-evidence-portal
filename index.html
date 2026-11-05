@@ -600,8 +600,13 @@ $('rejectedEvidencePanel').classList.add('hidden');
   await loadReferenceData();
   await loadSchoolStats();
   if(isAdmin) await loadPendingTeachers();
-  await loadEvidence();
-  await loadSchoolStats();
+await loadEvidence();
+
+if(isAdmin) {
+  await loadRejectedEvidence();
+}
+
+await loadSchoolStats();
 }
 
 async function loadReferenceData(){
