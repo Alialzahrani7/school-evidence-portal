@@ -721,7 +721,36 @@ const isAdmin = isSystemAdmin || profile.role === 'school_leader';
     await loadPendingTeachers();
   }
   
-async function loadPermissionUsers() {
+  $('savePermissionsBtn').disabled = true;
+  $('permissionsStatus').textContent = 'جارٍ حفظ الصلاحيات...';
+
+  const { error } = await supabase.rpc('set_user_permissions', {
+    target_user_id: userId,
+    new_permissions: permissions
+  });
+
+  $('savePermissionsBtn').disabled = false;
+
+  if (error) {
+    $('permissionsStatus').textContent =
+      'فشل حفظ الصلاحيات: ' + error.message;
+    return;
+  }
+
+  $('permissionsStatus').textContent = 'تم حفظ الصلاحيات بنجاح.';
+}
+
+
+  await loadEvidence();
+
+  if(isAdmin){
+    await loadRejectedEvidence();
+  }
+
+  // تحديث الإحصائيات مرة واحدة فقط
+  await loadSchoolStats();
+}
+  async function loadPermissionUsers() {
   const select = $('permissionUserSelect');
   select.innerHTML = '<option value="">جارٍ تحميل الموظفين...</option>';
 
@@ -787,36 +816,6 @@ async function saveSelectedUserPermissions() {
   document.querySelectorAll('[data-permission]').forEach(box => {
     permissions[box.dataset.permission] = box.checked;
   });
-
-  $('savePermissionsBtn').disabled = true;
-  $('permissionsStatus').textContent = 'جارٍ حفظ الصلاحيات...';
-
-  const { error } = await supabase.rpc('set_user_permissions', {
-    target_user_id: userId,
-    new_permissions: permissions
-  });
-
-  $('savePermissionsBtn').disabled = false;
-
-  if (error) {
-    $('permissionsStatus').textContent =
-      'فشل حفظ الصلاحيات: ' + error.message;
-    return;
-  }
-
-  $('permissionsStatus').textContent = 'تم حفظ الصلاحيات بنجاح.';
-}
-
-
-  await loadEvidence();
-
-  if(isAdmin){
-    await loadRejectedEvidence();
-  }
-
-  // تحديث الإحصائيات مرة واحدة فقط
-  await loadSchoolStats();
-}
 
 async function loadReferenceData(){
   const [d,c]=await Promise.all([
