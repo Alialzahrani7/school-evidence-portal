@@ -457,7 +457,8 @@ hr {
       <h2>إحصائيات شواهد المدرسة</h2>
       <div class="muted">مؤشرات الإنجاز لجميع مجالات التقييم الذاتي</div>
     </div>
-    <div class="actions" style="margin:0">   <button id="refreshStatsBtn" class="secondary">تحديث الإحصائيات</button>   <button id="exportStatsBtn" class="success hidden">تصدير تقرير PDF</button> </div>
+    <div class="actions" style="margin:0">   <button id="refreshStatsBtn" class="secondary">تحديث الإحصائيات</button> 
+      <button id="exportStatsBtn" class="success hidden">تصدير تقرير PDF</button> </div>
   </div>
 
   <div class="grid" style="margin-top:16px">
@@ -576,7 +577,10 @@ const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_kIjL_5rYAS3rKQF6PE7ZPw_qVIYwpv9
 const BUCKET = 'evidence-files';
 const REDIRECT_URL = 'https://alialzahrani7.github.io/school-evidence-portal/';
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
+window.addEventListener('error', (e) => {
+  const status = document.getElementById('loginStatus');
+  if (status) status.textContent = 'خطأ JavaScript: ' + e.message;
+});
 const $ = id => document.getElementById(id);
 let currentUser = null;
 let currentProfile = null;
