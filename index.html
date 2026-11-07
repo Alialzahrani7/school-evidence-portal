@@ -767,8 +767,8 @@ if (can('view_reports')) {
         <span class="badge">بانتظار الاعتماد</span>
       </div>
       <div class="actions">
-        <button onclick="handleTeacherRequest('${user.id}', 'approve')">اعتماد</button>
-        <button class="secondary" onclick="handleTeacherRequest('${user.id}', 'reject')">رفض</button>
+        <button onclick="reviewTeacherAccount('${user.id}', 'approve')">اعتماد</button>
+        <button onclick="reviewTeacherAccount('${user.id}', 'reject')">رفض</button>
       </div>
     </div>
   `).join('');
