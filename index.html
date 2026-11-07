@@ -674,14 +674,6 @@ try {
     'error'
   );
   return;
-}  catch (error) {
-  showOnly('loginView');
-  setStatus(
-    'loginStatus',
-    'تعذر تحميل صلاحيات الحساب: ' + error.message,
-    'error'
-  );
-  return;
 }
 
   if(profile.account_status!=='approved'){
@@ -1376,6 +1368,17 @@ $('refreshBtn').addEventListener('click',async()=>{
 });
   $('refreshStatsBtn').addEventListener('click',loadSchoolStats);
 $('refreshTeachersBtn').addEventListener('click',loadPendingTeachers);
+  $('refreshPermissionsBtn').addEventListener('click', loadPermissionUsers);
+
+$('permissionUserSelect').addEventListener(
+  'change',
+  loadSelectedUserPermissions
+);
+
+$('savePermissionsBtn').addEventListener(
+  'click',
+  saveSelectedUserPermissions
+);
 $('logoutBtn').addEventListener('click',async()=>{
   $('logoutBtn').disabled=true;
   const {error}=await supabase.auth.signOut();
