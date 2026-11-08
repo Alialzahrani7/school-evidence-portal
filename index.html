@@ -982,7 +982,7 @@ $('explorerDomainSelect').addEventListener('change', function() {
 
   const { data, error } = await supabase
     .from('evidence_uploads')
-    .select('id,title,description,file_name,file_path,review_status,created_at,profiles(full_name,email)')
+    .select('id,title,description,file_name,file_path,review_status,created_at,user_id')
     .eq('category_id', categoryId)
     .order('created_at', { ascending: false });
 
