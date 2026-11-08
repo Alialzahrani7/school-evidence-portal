@@ -745,9 +745,12 @@ const isAdmin = isSystemAdmin || profile.role === 'school_leader';
   $('exportStatsBtn').classList.toggle('hidden', !isAdmin);
   $('roleLabel').textContent=isAdmin?'لوحة قائد المدرسة':'لوحة المعلم';
   $('teacherPanel').classList.toggle('hidden',isAdmin);
+  $('schoolEvidenceExplorer').classList.toggle(
+  'hidden',
+  !can('view_all_evidence')
+);
   $('teacherApprovalPanel').classList.toggle('hidden',!isAdmin);
   $('listTitle').textContent=isAdmin?'جميع الشواهد ومراجعتها':'شواهدي المرفوعة';
-
   $('rejectedEvidenceTab').classList.toggle('hidden', !isAdmin);
   $('currentEvidenceTab').classList.remove('hidden');
   $('evidencePanel').classList.remove('hidden');
