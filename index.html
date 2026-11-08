@@ -534,16 +534,16 @@ hr {
     </div>
   </div>
 
-  <div id="evidenceChartLegend" style="
-    display:flex;
-    justify-content:center;
-    gap:16px;
-    flex-wrap:wrap;
-  ">
-    <span>🟢 المعتمدة</span>
-    <span>🟠 قيد المراجعة</span>
-    <span>🔴 المرفوضة</span>
-  </div>
+<div id="evidenceChartLegend" style="
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  flex-wrap:wrap;
+">
+  <span style="color:#16845b">🟢 المعتمدة: <strong id="chartApproved">0</strong></span>
+  <span style="color:#b7791f">🟠 قيد المراجعة: <strong id="chartPending">0</strong></span>
+  <span style="color:#c05656">🔴 المرفوضة: <strong id="chartRejected">0</strong></span>
+</div>
 </div>
 
   <div class="item" style="border-top:4px solid #167c80">
@@ -1191,6 +1191,34 @@ const approvalRate = totalEvidence > 0
   : 0;
 
 $('statApprovalRate').textContent = approvalRate + '%';
+  const pendingEvidence = Number(data.pending) || 0;
+const rejectedEvidence = Number(data.rejected) || 0;
+
+const approvedPercent = totalEvidence
+  ? approvedEvidence / totalEvidence * 100
+  : 0;
+
+const pendingPercent = totalEvidence
+  ? pendingEvidence / totalEvidence * 100
+  : 0;
+
+const rejectedPercent = totalEvidence
+  ? rejectedEvidence / totalEvidence * 100
+  : 0;
+
+$('chartTotal').textContent = totalEvidence;
+  $('chartApproved').textContent = approvedEvidence;
+$('chartPending').textContent = pendingEvidence;
+$('chartRejected').textContent = rejectedEvidence;
+
+$('evidenceChart').style.background = totalEvidence
+  ? `conic-gradient(
+      #16845b 0% ${approvedPercent}%,
+      #d69e2e ${approvedPercent}% ${approvedPercent + pendingPercent}%,
+      #c05656 ${approvedPercent + pendingPercent}% 100%
+    )`
+  : '#e8eff3';
+  
 
   const domains = data.domains || [];
 const totalTargets = domains.reduce((sum,d)=>sum+Number(d.target||0),0);
