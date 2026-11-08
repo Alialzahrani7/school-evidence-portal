@@ -474,10 +474,8 @@ hr {
       <button id="exportStatsBtn" class="success hidden">تصدير تقرير PDF</button> </div>
   </div>
 
-  <div class="grid" style="margin-top:16px">
-    <div class="item">
-      <div class="muted">إجمالي الشواهد</div>
 <div class="grid" style="
+  margin-top:16px;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:14px;
 ">
@@ -500,21 +498,32 @@ hr {
     <div class="muted">الشواهد المرفوضة</div>
     <h1 id="statRejected" style="color:#b42318;font-size:32px;margin:12px 0">—</h1>
   </div>
-  <div class="item" style="
-  margin-top:20px;
+
+  <div class="item" style="border-top:4px solid #167c80">
+    <div class="muted">نسبة اعتماد الشواهد</div>
+    <h1 id="statApprovalRate" style="color:#167c80;font-size:32px;margin:12px 0">—</h1>
+  </div>
+</div>
+
+<div class="item" style="
+  margin-top:18px;
   padding:20px;
   border:1px solid #e3ebee;
   border-radius:16px;
+  width:100%;
+  box-sizing:border-box;
 ">
-  <h2 style="margin-top:0">توزيع الشواهد حسب الحالة</h2>
+  <h2 style="margin-top:0;text-align:center">
+    توزيع الشواهد حسب الحالة
+  </h2>
 
   <div id="evidenceChart" style="
     width:190px;
     height:190px;
+    max-width:100%;
     border-radius:50%;
     margin:20px auto;
     background:conic-gradient(#e8eff3 0% 100%);
-    position:relative;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -534,24 +543,18 @@ hr {
     </div>
   </div>
 
-<div id="evidenceChartLegend" style="
-  display:flex;
-  justify-content:center;
-  gap:16px;
-  flex-wrap:wrap;
-">
-  <span style="color:#16845b">🟢 المعتمدة: <strong id="chartApproved">0</strong></span>
-  <span style="color:#b7791f">🟠 قيد المراجعة: <strong id="chartPending">0</strong></span>
-  <span style="color:#c05656">🔴 المرفوضة: <strong id="chartRejected">0</strong></span>
-</div>
-</div>
-
-  <div class="item" style="border-top:4px solid #167c80">
-    <div class="muted">نسبة اعتماد الشواهد</div>
-    <h1 id="statApprovalRate" style="color:#167c80;font-size:32px;margin:12px 0">—</h1>
+  <div id="evidenceChartLegend" style="
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+    text-align:center;
+  ">
+    <span style="color:#16845b">🟢 المعتمدة: <strong id="chartApproved">0</strong></span>
+    <span style="color:#b7791f">🟠 قيد المراجعة: <strong id="chartPending">0</strong></span>
+    <span style="color:#c05656">🔴 المرفوضة: <strong id="chartRejected">0</strong></span>
   </div>
 </div>
-
   <hr>
 <hr>
 
