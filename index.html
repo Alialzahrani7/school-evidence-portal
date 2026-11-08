@@ -500,6 +500,51 @@ hr {
     <div class="muted">الشواهد المرفوضة</div>
     <h1 id="statRejected" style="color:#b42318;font-size:32px;margin:12px 0">—</h1>
   </div>
+  <div class="item" style="
+  margin-top:20px;
+  padding:20px;
+  border:1px solid #e3ebee;
+  border-radius:16px;
+">
+  <h2 style="margin-top:0">توزيع الشواهد حسب الحالة</h2>
+
+  <div id="evidenceChart" style="
+    width:190px;
+    height:190px;
+    border-radius:50%;
+    margin:20px auto;
+    background:conic-gradient(#e8eff3 0% 100%);
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
+    <div style="
+      width:115px;
+      height:115px;
+      border-radius:50%;
+      background:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    ">
+      <strong id="chartTotal" style="font-size:25px">0</strong>
+      <span class="muted" style="font-size:12px">إجمالي الشواهد</span>
+    </div>
+  </div>
+
+  <div id="evidenceChartLegend" style="
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+  ">
+    <span>🟢 المعتمدة</span>
+    <span>🟠 قيد المراجعة</span>
+    <span>🔴 المرفوضة</span>
+  </div>
+</div>
 
   <div class="item" style="border-top:4px solid #167c80">
     <div class="muted">نسبة اعتماد الشواهد</div>
