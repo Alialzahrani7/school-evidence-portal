@@ -967,6 +967,49 @@ $('explorerDomainSelect').addEventListener('change', function() {
 
   $('schoolEvidenceStatus').textContent = '';
 });
+  async function loadSchoolEvidenceByCategory(categoryId) {
+  const list = $('schoolEvidenceList');
+  const status = $('schoolEvidenceStatus');
+
+  if (!categoryId) {
+    status.textContent = '';
+    list.innerHTML = 'اختر تصنيفًا لاستعراض الشواهد.';
+    return;
+  }
+
+  status.textContent = 'جاري تحميل الشواهد...';
+  list.innerHTML = '';
+
+  const { data, error } = await supabase
+    .from('evidence_uploads')
+    .select('id,title,description,file_name,file_path,review_status,created_at')
+    .eq('category_id', categoryId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    status.textContent = 'تعذر تحميل الشواهد: ' + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    status.textContent = 'لا توجد شواهد في هذا التصنيف.';
+    return;
+  }
+
+  status.textContent = `عدد الشواهد: ${data.length}`;
+
+  list.innerHTML = data.map(item => `
+    <div class="item">
+      <strong>${escapeHtml(item.title || 'بدون عنوان')}</strong>
+      <p>${escapeHtml(item.description || '')}</p>
+      <div>${escapeHtml(item.file_name || '')}</div>
+      <div>الحالة: ${escapeHtml(item.review_status || 'غير محدد')}</div>
+    </div>
+  `).join('');
+}
+  $('explorerCategorySelect').addEventListener('change', function() {
+  loadSchoolEvidenceByCategory(this.value);
+});
 async function loadSchoolStats(){
   $('statsStatus').textContent = 'جارٍ تحديث إحصائيات المدرسة...';
 
