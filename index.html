@@ -494,16 +494,43 @@ hr {
   </div>
 
   <hr>
-  <div class="item" style="background:#eaf4f3">
-  <div class="muted">نسبة الإنجاز الإجمالية للمدرسة</div>
-  <h1 id="schoolOverallPercentage" style="font-size:34px;color:#167c80">0%</h1>
-  <div class="muted" id="schoolOverallDetails">جارٍ حساب الإنجاز...</div>
-</div>
-  <h2>نسبة إنجاز مجالات التقييم</h2>
-  <div id="domainStats">
-    <div class="muted">جارٍ تحميل الإحصائيات...</div>
+<hr>
+
+<div class="item" style="
+  background:linear-gradient(135deg,#eaf4f3,#f7fbfa);
+  border:1px solid #d5e9e5;
+  border-radius:16px;
+  padding:22px;
+  text-align:center;
+  margin-bottom:22px;
+">
+  <div class="muted" style="font-size:15px">
+    نسبة الإنجاز الإجمالية للمدرسة
   </div>
-  <div id="statsStatus" class="muted"></div>
+
+  <h1 id="schoolOverallPercentage" style="
+    font-size:46px;
+    color:#167c80;
+    margin:12px 0;
+    font-weight:800;
+  ">0%</h1>
+
+  <div class="muted" id="schoolOverallDetails">
+    جارٍ حساب الإنجاز...
+  </div>
+</div>
+
+<h2 style="margin-bottom:14px">إنجاز مجالات التقييم الذاتي</h2>
+
+<div id="domainStats" style="
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+">
+  <div class="muted">جارٍ تحميل الإحصائيات...</div>
+</div>
+
+<div id="statsStatus" class="muted"></div>
 </section>
 
 
