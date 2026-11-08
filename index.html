@@ -1461,13 +1461,14 @@ let query=supabase.from('evidence_uploads')
     const created=item.created_at?new Date(item.created_at).toLocaleString('ar-SA'):'';
     const ownerLine=isAdmin?`<p>المعلم: ${escapeHtml(owner?.full_name||owner?.email||item.user_id)}</p>`:'';
     const notes=item.reviewer_notes?`<p>ملاحظات المراجع: ${escapeHtml(item.reviewer_notes)}</p>`:'';
-    const review=isAdmin?`
-      <hr><label for="note-${item.id}">ملاحظات المراجعة</label>
-      <textarea id="note-${item.id}" maxlength="1000" placeholder="اكتب الملاحظات (اختياري)">${escapeHtml(item.reviewer_notes||'')}</textarea>
-      <div class="actions">
-        <button class="success" data-review="approved" data-id="${item.id}">اعتماد</button>
-        <button class="danger" data-review="rejected" data-id="${item.id}">رفض</button>
-      </div>`:'';
+const review = isAdmin && item.review_status === 'pending' ? `
+  <hr>
+  <label for="note-${item.id}">ملاحظات المراجعة</label>
+  <textarea id="note-${item.id}" maxlength="1000" placeholder="اكتب الملاحظات (اختياري)">${escapeHtml(item.reviewer_notes||'')}</textarea>
+  <div class="actions">
+    <button class="success" data-review="approved" data-id="${item.id}">اعتماد</button>
+    <button class="danger" data-review="rejected" data-id="${item.id}">رفض</button>
+  </div>` : '';
     return `<article class="item">
       <div class="item-top"><h3>${escapeHtml(item.title)}</h3>${statusPill(item.review_status)}</div>
       ${ownerLine}
