@@ -1242,7 +1242,8 @@ async function reviewTeacherAccount(userId,action){
   await loadPendingTeachers();
   alert(action==='approve'?'تم اعتماد حساب المعلم.':'تم رفض حساب المعلم.');
 }
-
+  window.reviewTeacherAccount = reviewTeacherAccount;
+  
 async function loadEvidence(){
   $('evidenceList').textContent='جارٍ تحميل الشواهد...';
   const isAdmin=['school_leader','system_admin'].includes(currentProfile.role);
