@@ -749,24 +749,42 @@ if (can('view_reports')) {
   await loadSchoolStats();
 }
 }
-  async function loadPendingTeachers() {
+async function loadPendingTeachers() {
   const list = $('teacherRequestsList');
 
-list.innerHTML = data.map(user => `
-  <div class="item">
-    <div class="item-top">
-      <div>
-        <strong>${escapeHtml(user.full_name || 'بدون اسم')}</strong>
-        <div class="muted">${escapeHtml(user.email || '')}</div>
+  list.innerHTML = '<div class="muted">جارٍ تحميل طلبات الاعتماد...</div>';
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, email, role, account_status, created_at')
+    .eq('account_status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    list.textContent = 'تعذر تحميل الطلبات: ' + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.textContent = 'لا توجد طلبات اعتماد معلقة حاليًا.';
+    return;
+  }
+
+  list.innerHTML = data.map(user => `
+    <div class="item">
+      <div class="item-top">
+        <div>
+          <strong>${escapeHtml(user.full_name || 'بدون اسم')}</strong>
+          <div class="muted">${escapeHtml(user.email || '')}</div>
+        </div>
+        <span class="badge">بانتظار الاعتماد</span>
       </div>
-      <span class="badge">بانتظار الاعتماد</span>
+      <div class="actions">
+        <button type="button" data-teacher-id="${user.id}" data-action="approve">اعتماد</button>
+        <button type="button" data-teacher-id="${user.id}" data-action="reject">رفض</button>
+      </div>
     </div>
-    <div class="actions">
-      <button type="button" data-teacher-id="${user.id}" data-action="approve">اعتماد</button>
-      <button type="button" data-teacher-id="${user.id}" data-action="reject">رفض</button>
-    </div>
-  </div>
-`).join('');
+  `).join('');
 }
   $('teacherRequestsList').addEventListener('click', function(event) {
   const button = event.target.closest('button[data-teacher-id]');
