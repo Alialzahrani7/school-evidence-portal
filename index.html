@@ -768,6 +768,15 @@ list.innerHTML = data.map(user => `
   </div>
 `).join('');
 }
+  $('teacherRequestsList').addEventListener('click', function(event) {
+  const button = event.target.closest('button[data-teacher-id]');
+  if (!button) return;
+
+  const userId = button.dataset.teacherId;
+  const action = button.dataset.action;
+
+  reviewTeacherAccount(userId, action);
+});
   async function loadPermissionUsers() {
   const select = $('permissionUserSelect');
   select.innerHTML = '<option value="">جارٍ تحميل الموظفين...</option>';
