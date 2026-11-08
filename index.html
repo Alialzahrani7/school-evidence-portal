@@ -477,21 +477,35 @@ hr {
   <div class="grid" style="margin-top:16px">
     <div class="item">
       <div class="muted">إجمالي الشواهد</div>
-      <h1 id="statTotal">—</h1>
-    </div>
-    <div class="item">
-      <div class="muted">الشواهد المعتمدة</div>
-      <h1 id="statApproved" style="color:#087443">—</h1>
-    </div>
-    <div class="item">
-      <div class="muted">قيد المراجعة</div>
-      <h1 id="statPending" style="color:#8a5a00">—</h1>
-    </div>
-    <div class="item">
-      <div class="muted">الشواهد المرفوضة</div>
-      <h1 id="statRejected" style="color:#b42318">—</h1>
-    </div>
+<div class="grid" style="
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
+">
+  <div class="item" style="border-top:4px solid #34495e">
+    <div class="muted">إجمالي الشواهد</div>
+    <h1 id="statTotal" style="font-size:32px;margin:12px 0">—</h1>
   </div>
+
+  <div class="item" style="border-top:4px solid #087443">
+    <div class="muted">الشواهد المعتمدة</div>
+    <h1 id="statApproved" style="color:#087443;font-size:32px;margin:12px 0">—</h1>
+  </div>
+
+  <div class="item" style="border-top:4px solid #b7791f">
+    <div class="muted">قيد المراجعة</div>
+    <h1 id="statPending" style="color:#8a5a00;font-size:32px;margin:12px 0">—</h1>
+  </div>
+
+  <div class="item" style="border-top:4px solid #b42318">
+    <div class="muted">الشواهد المرفوضة</div>
+    <h1 id="statRejected" style="color:#b42318;font-size:32px;margin:12px 0">—</h1>
+  </div>
+
+  <div class="item" style="border-top:4px solid #167c80">
+    <div class="muted">نسبة اعتماد الشواهد</div>
+    <h1 id="statApprovalRate" style="color:#167c80;font-size:32px;margin:12px 0">—</h1>
+  </div>
+</div>
 
   <hr>
 <hr>
