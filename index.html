@@ -927,7 +927,14 @@ async function loadReferenceData(){
   domains=d.data||[]; categories=c.data||[];
   $('domainSelect').innerHTML='<option value="">اختر المجال</option>'+domains.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`).join('');
 }
-  
+  $('explorerDomainSelect').innerHTML =
+  '<option value="">اختر المسار</option>' +
+  domains.map(x =>
+    `<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`
+  ).join('');
+
+$('explorerCategorySelect').innerHTML =
+  '<option value="">اختر التصنيف</option>';
 async function loadSchoolStats(){
   $('statsStatus').textContent = 'جارٍ تحديث إحصائيات المدرسة...';
 
