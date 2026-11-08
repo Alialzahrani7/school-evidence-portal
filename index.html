@@ -982,7 +982,7 @@ $('explorerDomainSelect').addEventListener('change', function() {
 
   const { data, error } = await supabase
     .from('evidence_uploads')
-    .select('id,title,description,file_name,file_path,review_status,created_at')
+    .select('id,title,description,file_name,file_path,review_status,created_at,profiles(full_name,email)')
     .eq('category_id', categoryId)
     .order('created_at', { ascending: false });
 
@@ -1004,6 +1004,13 @@ $('explorerDomainSelect').addEventListener('change', function() {
       <p>${escapeHtml(item.description || '')}</p>
 <div>${escapeHtml(item.file_name || '')}</div>
 <div>الحالة: ${escapeHtml(item.review_status || 'غير محدد')}</div>
+<div>المعلم: ${escapeHtml(item.profiles?.full_name || item.profiles?.email || 'غير معروف')}</div>
+
+<div>تاريخ الرفع: ${
+  item.created_at
+    ? new Date(item.created_at).toLocaleDateString('ar-SA')
+    : 'غير محدد'
+}</div>
 
 <button
   type="button"
