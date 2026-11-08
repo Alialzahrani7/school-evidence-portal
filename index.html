@@ -559,7 +559,36 @@ hr {
       <div class="actions"><button id="uploadBtn" type="submit">رفع الشاهد</button></div>
       <div id="uploadStatus" class="status">الصيغ المسموحة: PDF وJPG وPNG وWEBP وDOCX وPPTX وXLSX.</div>
     </form>
-  </section><section class="card" id="evidencePanel">
+</section>
+
+<section id="schoolEvidenceExplorer" class="card hidden">
+  <div class="item-top">
+    <div>
+      <h2>استعراض شواهد المدرسة</h2>
+      <p class="muted">استعرض الشواهد حسب مسارات التقييم الذاتي وتصنيفاتها.</p>
+    </div>
+    <button id="refreshSchoolEvidenceBtn" class="secondary" type="button">
+      تحديث
+    </button>
+  </div>
+
+  <label for="explorerDomainSelect">اختر مسار التقييم</label>
+  <select id="explorerDomainSelect">
+    <option value="">اختر المسار</option>
+  </select>
+
+  <label for="explorerCategorySelect">اختر التصنيف</label>
+  <select id="explorerCategorySelect" disabled>
+    <option value="">اختر التصنيف</option>
+  </select>
+
+  <div id="schoolEvidenceStatus" class="status"></div>
+  <div id="schoolEvidenceList" class="muted">
+    اختر مسارًا وتصنيفًا لاستعراض الشواهد.
+  </div>
+</section>
+
+<section class="card" id="evidencePanel">
   <div class="item-top">
     <h2 id="listTitle">الشواهد</h2>
     <div class="actions" style="margin:0">
