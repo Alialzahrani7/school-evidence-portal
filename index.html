@@ -997,6 +997,22 @@ $('explorerDomainSelect').addEventListener('change', function() {
   }
 
   status.textContent = `عدد الشواهد: ${data.length}`;
+ const userIds = [...new Set(data.map(item => item.user_id).filter(Boolean))];
+
+const { data: profilesData, error: profilesError } = await supabase
+  .from('profiles')
+  .select('id,full_name,email')
+  .in('id', userIds);
+
+if (profilesError) {
+  console.error('خطأ تحميل أسماء المعلمين:', profilesError);
+}
+
+const profilesMap = {};
+
+(profilesData || []).forEach(profile => {
+  profilesMap[profile.id] = profile;
+});
 
   list.innerHTML = data.map(item => `
     <div class="item">
@@ -1004,7 +1020,11 @@ $('explorerDomainSelect').addEventListener('change', function() {
       <p>${escapeHtml(item.description || '')}</p>
 <div>${escapeHtml(item.file_name || '')}</div>
 <div>الحالة: ${escapeHtml(item.review_status || 'غير محدد')}</div>
-<div>المعلم: ${escapeHtml(item.profiles?.full_name || item.profiles?.email || 'غير معروف')}</div>
+<div>المعلم: ${escapeHtml(
+  profilesMap[item.user_id]?.full_name ||
+  profilesMap[item.user_id]?.email ||
+  'غير معروف'
+)}</div>
 
 <div>تاريخ الرفع: ${
   item.created_at
