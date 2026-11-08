@@ -1002,8 +1002,14 @@ $('explorerDomainSelect').addEventListener('change', function() {
     <div class="item">
       <strong>${escapeHtml(item.title || 'بدون عنوان')}</strong>
       <p>${escapeHtml(item.description || '')}</p>
-      <div>${escapeHtml(item.file_name || '')}</div>
-      <div>الحالة: ${escapeHtml(item.review_status || 'غير محدد')}</div>
+<div>${escapeHtml(item.file_name || '')}</div>
+<div>الحالة: ${escapeHtml(item.review_status || 'غير محدد')}</div>
+
+<button
+  type="button"
+  data-evidence-file="${escapeHtml(item.file_path || '')}">
+  استعراض الشاهد
+</button>
     </div>
   `).join('');
 }
