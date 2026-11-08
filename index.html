@@ -922,19 +922,51 @@ async function loadReferenceData(){
     supabase.from('evaluation_domains').select('id,name,sort_order').order('sort_order'),
     supabase.from('evidence_categories').select('id,domain_id,name,sort_order').order('sort_order')
   ]);
+
   if(d.error) throw d.error;
   if(c.error) throw c.error;
-  domains=d.data||[]; categories=c.data||[];
-  $('domainSelect').innerHTML='<option value="">اختر المجال</option>'+domains.map(x=>`<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`).join('');
-}
-  $('explorerDomainSelect').innerHTML =
-  '<option value="">اختر المسار</option>' +
-  domains.map(x =>
-    `<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`
-  ).join('');
 
-$('explorerCategorySelect').innerHTML =
-  '<option value="">اختر التصنيف</option>';
+  domains = d.data || [];
+  categories = c.data || [];
+
+  $('domainSelect').innerHTML =
+    '<option value="">اختر المجال</option>' +
+    domains.map(x =>
+      `<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`
+    ).join('');
+
+  $('explorerDomainSelect').innerHTML =
+    '<option value="">اختر المسار</option>' +
+    domains.map(x =>
+      `<option value="${escapeHtml(x.id)}">${escapeHtml(x.name)}</option>`
+    ).join('');
+
+  $('explorerCategorySelect').innerHTML =
+    '<option value="">اختر التصنيف</option>';
+
+  $('explorerCategorySelect').disabled = true;
+}
+
+$('explorerDomainSelect').addEventListener('change', function() {
+  const domainId = this.value;
+
+  const relatedCategories = categories.filter(
+    category => category.domain_id === domainId
+  );
+
+  $('explorerCategorySelect').innerHTML =
+    '<option value="">اختر التصنيف</option>' +
+    relatedCategories.map(category =>
+      `<option value="${escapeHtml(category.id)}">${escapeHtml(category.name)}</option>`
+    ).join('');
+
+  $('explorerCategorySelect').disabled = !domainId;
+
+  $('schoolEvidenceList').innerHTML =
+    'اختر التصنيف لاستعراض الشواهد.';
+
+  $('schoolEvidenceStatus').textContent = '';
+});
 async function loadSchoolStats(){
   $('statsStatus').textContent = 'جارٍ تحديث إحصائيات المدرسة...';
 
