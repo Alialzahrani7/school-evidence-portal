@@ -1016,6 +1016,45 @@ $('explorerDomainSelect').addEventListener('change', function() {
   $('explorerCategorySelect').addEventListener('change', function() {
   loadSchoolEvidenceByCategory(this.value);
 });
+  $('schoolEvidenceList').addEventListener('click', async function(event) {
+  const button = event.target.closest('button[data-evidence-file]');
+  if (!button) return;
+
+  const filePath = button.dataset.evidenceFile;
+
+  if (!filePath) {
+    alert('مسار الملف غير متوفر.');
+    return;
+  }
+
+  const newWindow = window.open('about:blank', '_blank');
+
+  if (!newWindow) {
+    alert('اسمح بفتح النوافذ المنبثقة لاستعراض الشاهد.');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = 'جاري تجهيز الملف...';
+
+  try {
+    const { data, error } = await supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(filePath, 300);
+
+    if (error) throw error;
+
+    newWindow.location.href = data.signedUrl;
+
+  } catch (error) {
+    newWindow.close();
+    alert('تعذر فتح الشاهد: ' + error.message);
+
+  } finally {
+    button.disabled = false;
+    button.textContent = 'استعراض الشاهد';
+  }
+});
 async function loadSchoolStats(){
   $('statsStatus').textContent = 'جارٍ تحديث إحصائيات المدرسة...';
 
