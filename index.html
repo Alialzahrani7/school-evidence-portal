@@ -1143,30 +1143,91 @@ $('schoolOverallDetails').textContent =
     return;
   }
 
-  $('domainStats').innerHTML = domains.map(d => {
-    const percentage = Math.min(100, Math.max(0, Number(d.percentage) || 0));
+$('domainStats').innerHTML = domains.map(d => {
+  const percentage = Math.min(100, Math.max(0, Number(d.percentage) || 0));
+  const completed = Number(d.completed) || 0;
+  const target = Number(d.target) || 0;
 
-    return `
-      <article class="item">
-        <div class="item-top">
-          <h3>${escapeHtml(d.name)}</h3>
-          <strong>${percentage}%</strong>
-        </div>
-        <div style="height:13px;background:#e8eff3;border-radius:20px;overflow:hidden;margin:12px 0">
-          <div style="
-            width:${percentage}%;
-            height:100%;
-            background:#167c80;
-            border-radius:20px;
-            transition:width .3s">
-          </div>
-        </div>
-        <div class="muted">
-          التصنيفات المنجزة: ${d.completed} من ${d.target}
-        </div>
-      </article>
-    `;
-  }).join('');
+  const statusText = percentage >= 100
+    ? 'مكتمل'
+    : percentage >= 75
+      ? 'إنجاز مرتفع'
+      : percentage >= 40
+        ? 'قيد الإنجاز'
+        : 'يحتاج إلى متابعة';
+
+  const statusColor = percentage >= 100
+    ? '#16845b'
+    : percentage >= 75
+      ? '#167c80'
+      : percentage >= 40
+        ? '#b7791f'
+        : '#c05656';
+
+  return `
+    <article class="item" style="
+      background:#fff;
+      border:1px solid #e3ebee;
+      border-radius:15px;
+      padding:18px;
+      box-shadow:0 3px 12px rgba(0,0,0,.04);
+    ">
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:10px;
+      ">
+        <h3 style="margin:0;font-size:17px">
+          ${escapeHtml(d.name)}
+        </h3>
+
+        <strong style="
+          color:${statusColor};
+          font-size:21px;
+          white-space:nowrap;
+        ">${percentage}%</strong>
+      </div>
+
+      <div style="
+        height:12px;
+        background:#edf1f3;
+        border-radius:20px;
+        overflow:hidden;
+        margin:18px 0 12px;
+      ">
+        <div style="
+          width:${percentage}%;
+          height:100%;
+          background:${statusColor};
+          border-radius:20px;
+          transition:width .4s ease;
+        "></div>
+      </div>
+
+      <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:8px;
+        flex-wrap:wrap;
+      ">
+        <span class="muted" style="font-size:13px">
+          التصنيفات المنجزة: ${completed} من ${target}
+        </span>
+
+        <span style="
+          color:${statusColor};
+          background:${statusColor}15;
+          padding:5px 10px;
+          border-radius:20px;
+          font-size:12px;
+          font-weight:700;
+        ">${statusText}</span>
+      </div>
+    </article>
+  `;
+}).join('');
 
   $('statsStatus').textContent =
     'تم تحديث إحصائيات المدرسة بنجاح.';
