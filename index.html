@@ -8,584 +8,85 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-/* ===== تحسين واجهة لوحة التحكم ===== */
+  
 
 :root {
-  --navy: #102f46;
-  --navy-dark: #082238;
-  --teal: #0b8f86;
-  --teal-deep: #08736d;
-  --teal-light: #e7f7f4;
-  --ink: #18364f;
-  --muted: #6b7f91;
-  --line: #e2ebef;
-  --bg: #f5f8fa;
-  --surface: rgba(255,255,255,.95);
-  --shadow-sm: 0 8px 24px rgba(17, 48, 72, .06);
-  --shadow-md: 0 18px 44px rgba(17, 48, 72, .11);
-}
-
-body {
-  background:
-    radial-gradient(
-      circle at 100% 0%,
-      rgba(214,245,240,.65),
-      transparent 28rem
-    ),
-    linear-gradient(
-      180deg,
-      #f8fbfc 0%,
-      #f5f8fa 58%,
-      #eef4f6 100%
-    );
-  color: var(--ink);
-}
-
-/* الهيدر */
-
-header {
-  background: rgba(10, 38, 58, .96);
-  padding: 10px 24px;
-  border-bottom: 1px solid rgba(123, 226, 213, .28);
-  box-shadow: 0 12px 30px rgba(9, 34, 52, .18);
-  backdrop-filter: blur(12px);
-}
-
-.header-inner {
-  max-width: 1240px;
-  min-height: 68px;
-}
-
-header img {
-  width: 62px !important;
-  height: 62px !important;
-  padding: 5px;
-  border-radius: 18px;
-  background: rgba(255,255,255,.96);
-}
-
-.brand {
-  font-size: 19px;
-  letter-spacing: -.5px;
-}
-
-.school {
-  color: rgba(235,248,248,.82);
-}
-
-/* المحتوى العام */
-
-main {
-  max-width: 1240px;
-  margin: 30px auto 72px;
-  padding: 0 24px;
-}
-
-.card {
-  background: var(--surface);
-  border: 1px solid rgba(217, 231, 236, .9);
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 22px;
-  transition:
-    box-shadow .25s ease,
-    transform .25s ease,
-    border-color .25s ease;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-md);
-  border-color: #d2e4e7;
-}
-
-/* بانر لوحة التحكم */
-
-#appView > .card:first-child {
-  min-height: 176px;
-  display: flex;
-  align-items: center;
-  background:
-    radial-gradient(
-      circle at 12% 20%,
-      rgba(119,232,216,.22),
-      transparent 13rem
-    ),
-    linear-gradient(
-      135deg,
-      #0e3049 0%,
-      #14576a 52%,
-      #147c79 100%
-    );
-  border: 0;
-  padding: 32px 36px;
-  position: relative;
-  overflow: hidden;
-}
-
-#appView > .card:first-child::before {
-  content: "";
-  position: absolute;
-  inset: auto 8% -55px auto;
-  width: 220px;
-  height: 220px;
-  border: 1px solid rgba(255,255,255,.17);
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 22px rgba(255,255,255,.035),
-    0 0 0 44px rgba(255,255,255,.025);
-}
-
-#appView > .card:first-child h1 {
-  color: white;
-  font-size: clamp(27px, 3vw, 38px);
-  letter-spacing: -.8px;
-  margin-bottom: 4px;
-}
-
-#appView > .card:first-child .sub {
-  color: #b8e6e4 !important;
-  font-weight: 700;
-}
-
-#appView > .card:first-child .muted {
-  color: #d5f0ef;
-}
-
-#appView > .card:first-child .pill {
-  background: rgba(255,255,255,.16);
-  color: #ecfffb;
-  border: 1px solid rgba(255,255,255,.22);
-}
-
-/* العناوين */
-
-h1,
-h2,
-h3 {
-  color: var(--navy);
-  letter-spacing: -.3px;
-}
-
-h2 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-h2::before {
-  content: "";
-  display: inline-block;
-  width: 5px;
-  height: 22px;
-  border-radius: 5px;
-  background: linear-gradient(
-    var(--teal),
-    #74d8cd
-  );
-}
-
-.sub,
-.muted {
-  color: var(--muted);
-}
-
-/* الخط العلوي للأقسام */
-
-#schoolStatsPanel,
-#teacherPanel,
-#teacherApprovalPanel,
-#permissionsPanel {
-  border-top: 0;
-}
-
-#schoolStatsPanel::before,
-#teacherPanel::before,
-#teacherApprovalPanel::before,
-#permissionsPanel::before {
-  content: "";
-  display: block;
-  width: 52px;
-  height: 4px;
-  border-radius: 10px;
-  background: var(--teal);
-  margin-bottom: 19px;
-}
-
-#teacherApprovalPanel::before {
-  background: #d39a2e;
-}
-
-#permissionsPanel::before {
-  background: #6a72d9;
-}
-
-/* بطاقات الإحصائيات */
-
-#schoolStatsPanel > .grid {
-  display: grid;
-  grid-template-columns:
-    repeat(5, minmax(0, 1fr)) !important;
-  gap: 14px !important;
-}
-
-#schoolStatsPanel > .grid .item {
-  position: relative;
-  min-height: 142px;
-  margin: 0;
-  padding: 19px 18px !important;
-  border: 1px solid var(--line) !important;
-  border-top: 0 !important;
-  border-radius: 18px;
-  background: linear-gradient(
-    145deg,
-    #ffffff,
-    #f6fafb
-  );
-  overflow: hidden;
-}
-
-#schoolStatsPanel > .grid .item::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 4px;
-  background: var(--stat-color, var(--teal));
-}
-
-#schoolStatsPanel > .grid .item:nth-child(1) {
-  --stat-color: #587083;
-}
-
-#schoolStatsPanel > .grid .item:nth-child(2) {
-  --stat-color: #0b8f67;
-}
-
-#schoolStatsPanel > .grid .item:nth-child(3) {
-  --stat-color: #ce9825;
-}
-
-#schoolStatsPanel > .grid .item:nth-child(4) {
-  --stat-color: #c74c52;
-}
-
-#schoolStatsPanel > .grid .item:nth-child(5) {
-  --stat-color: #0c8887;
-}
-
-#schoolStatsPanel > .grid .item h1 {
-  font-size: 35px !important;
-  margin: 14px 0 0 !important;
-}
-
-#schoolStatsPanel > .grid .item .muted {
-  font-size: 12px;
-  font-weight: 700;
-}
-
-/* الرسم الدائري */
-
-#evidenceChart {
-  width: 210px !important;
-  height: 210px !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(13,74,83,.05),
-    0 12px 30px rgba(15,139,131,.12);
-}
-
-#evidenceChart > div {
-  width: 128px !important;
-  height: 128px !important;
-  box-shadow: 0 0 0 9px rgba(255,255,255,.72);
-}
-
-#chartTotal {
-  color: var(--navy);
-  font-size: 30px !important;
-}
-
-#evidenceChartLegend span {
-  font-size: 13px;
-  font-weight: 700;
-}
-
-/* نسبة إنجاز المدرسة */
-
-#schoolOverallPercentage {
-  font-size: 52px !important;
-  color: var(--teal-deep) !important;
-  letter-spacing: -2px;
-}
-
-/* بطاقات المجالات */
-
-#domainStats {
-  grid-template-columns:
-    repeat(auto-fit, minmax(250px, 1fr)) !important;
-}
-
-#domainStats .item {
-  min-height: 174px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-#domainStats .item > div[style*="height:12px"] {
-  height: 9px !important;
-  margin: 18px 0 14px !important;
-  background: #eaf1f2 !important;
-}
-
-/* بطاقات الشواهد */
-
-.item {
-  border-radius: 18px;
-  padding: 20px;
-  border-color: #e1ebee;
-}
-
-.item-top {
-  align-items: flex-start;
-}
-
-.item-top h3 {
-  margin-top: 2px;
-}
-
-.item p {
-  color: #607487;
-  line-height: 1.8;
-}
-
-/* شارة طلبات الاعتماد */
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 11px;
-  border-radius: 999px;
-  background: #fff4d8;
-  color: #8c610f;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-/* الأزرار */
-
-.actions {
-  gap: 10px;
-}
-
-button {
-  min-height: 43px;
-  border-radius: 13px;
-  padding: 10px 17px;
-  box-shadow: 0 7px 16px rgba(18,48,74,.12);
-}
-
-button.secondary {
-  border: 1px solid #dce8ec;
-  background: #f4f8fa;
-}
-
-button.danger {
-  background: #c34b53;
-}
-
-button.success {
-  background: #0a805f;
-}
-
-/* الحقول */
-
-label {
-  color: var(--navy);
-  margin-top: 16px;
-}
-
-input,
-select,
-textarea {
-  border-color: #d8e5e9;
-  background: #fbfdfe;
-  border-radius: 13px;
-  min-height: 46px;
-}
-
-textarea {
-  min-height: 116px;
-}
-
-input[type="checkbox"] {
-  width: 18px;
-  min-height: 18px;
-  accent-color: var(--teal);
-  vertical-align: middle;
-}
-
-/* الصلاحيات */
-
-#permissionOptions label {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 13px 14px;
-  margin: 0;
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  background: #f8fbfc;
-  font-size: 12px;
-}
-
-#permissionOptions label:hover {
-  border-color: #a9d8d3;
-  background: var(--teal-light);
-}
-
-/* رسائل الحالة */
-
-.status {
-  border-radius: 13px;
-  padding: 13px 16px;
-  background: #f6f9fa;
-}
-
-/* شاشة تسجيل الدخول */
-
-.login {
-  border-top: 5px solid var(--teal);
-  box-shadow: 0 24px 60px rgba(17,48,72,.10);
-}
-
-.login h1 {
-  font-size: 30px;
-}
-
-.login > img {
-  width: 122px !important;
-  height: 122px !important;
-  padding: 9px;
-  border-radius: 30px;
-  background: #f5fbfb;
-}
-
-/* تحسين الشاشات المتوسطة */
-
-@media (max-width: 1050px) {
-  #schoolStatsPanel > .grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-/* تحسين الجوال */
-
-@media (max-width: 700px) {
-  header {
-    padding: 8px 13px;
-  }
-
-  .header-inner {
-    min-height: 58px;
-  }
-
-  header img {
-    width: 50px !important;
-    height: 50px !important;
-  }
-
-  main {
-    margin: 16px auto 42px;
-    padding: 0 12px;
-  }
-
-  .card {
-    padding: 20px;
-    border-radius: 19px;
-    margin-bottom: 16px;
-  }
-
-  #appView > .card:first-child {
-    min-height: 164px;
-    padding: 24px 21px;
-  }
-
-  #appView > .card:first-child .item-top {
-    gap: 16px;
-  }
-
-  #appView > .card:first-child h1 {
-    font-size: 27px;
-  }
-
-  #schoolStatsPanel > .grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr)) !important;
-  }
-
-  #schoolStatsPanel > .grid .item {
-    min-height: 120px;
-    padding: 16px 14px !important;
-  }
-
-  #schoolStatsPanel > .grid .item h1 {
-    font-size: 30px !important;
-  }
-
-  #domainStats {
-    grid-template-columns: 1fr !important;
-  }
-
-  .item-top {
-    flex-direction: column;
-  }
-
-  .item-top > .actions {
-    width: 100%;
-  }
-
-  .item-top > .actions button {
-    flex: 1;
-  }
-
-  .actions button {
-    flex: 1 1 auto;
-  }
-
-  #evidenceChart {
-    width: 190px !important;
-    height: 190px !important;
-  }
-}
-
-/* الجوال الصغير */
-
-@media (max-width: 430px) {
-  #schoolStatsPanel > .grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 9px !important;
-  }
-
-  #schoolStatsPanel > .grid .item .muted {
-    font-size: 11px;
-  }
-
-  #schoolStatsPanel > .grid .item h1 {
-    font-size: 27px !important;
-  }
-
-  .brand {
-    font-size: 16px;
-  }
-
-  .school {
-    font-size: 11px;
-  }
-}
-
+  --navy: #12304a;
+  --navy-dark: #0b2236;
+  --teal: #0f8b83;
+  --teal-light: #e9f7f4;
+  --ink: #17324d;
+  --muted: #64748b;
+  --line: #dfe8ee;
+  --bg: #f3f7fa;
+  --red: #b4232d;
+  --green: #087443;
+  --gold: #a96908;
+  --shadow-sm: 0 4px 14px rgba(18,48,74,.06);
+  --shadow-md: 0 14px 34px rgba(18,48,74,.09);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: radial-gradient(circle at top right, #ffffff 0, var(--bg) 42rem); font-family: 'Tajawal', Tahoma, Arial, sans-serif; color: #243b53; line-height: 1.75; }
+button, input, select, textarea { font: inherit; }
+button { border: 0; border-radius: 12px; padding: 11px 18px; background: var(--navy); color: white; font-weight: 700; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .2s ease; box-shadow: 0 5px 12px rgba(18,48,74,.14); }
+button:hover { background: var(--navy-dark); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(18,48,74,.18); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(15,139,131,.28); outline-offset: 2px; }
+button:disabled { opacity: .55; cursor: wait; transform: none; }
+button.secondary { background: #edf3f7; color: var(--navy); box-shadow: none; }
+button.secondary:hover { background: #dfeaf0; }
+button.danger { background: #b4232d; }
+button.success { background: var(--green); }
+button.success:hover { background: #075d36; }
+header { position: sticky; top: 0; z-index: 10; background: rgba(18,48,74,.96); color: white; padding: 12px 24px; box-shadow: 0 5px 20px rgba(16,38,59,.18); border-bottom: 3px solid var(--teal); backdrop-filter: blur(12px); }
+.header-inner { max-width: 1180px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.brand { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+.school { font-size: 13px; opacity: .86; }
+main { max-width: 1180px; margin: 28px auto 60px; padding: 0 20px; }
+.card { background: rgba(255,255,255,.96); border: 1px solid var(--line); border-radius: 20px; padding: 26px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+.card:hover { box-shadow: var(--shadow-md); }
+#appView > .card:first-child { background: linear-gradient(120deg, #12304a, #1c6470); color: white; border: 0; padding: 28px 30px; position: relative; overflow: hidden; }
+#appView > .card:first-child::after { content: ''; position: absolute; width: 220px; height: 220px; border: 28px solid rgba(255,255,255,.08); border-radius: 50%; left: -70px; top: -100px; }
+#appView > .card:first-child h1 { color: white; font-size: 27px; position: relative; z-index: 1; }
+#appView > .card:first-child .muted { color: #d9eef0; position: relative; z-index: 1; }
+.login { max-width: 470px; margin: 8vh auto; text-align: center; padding: 38px 34px; }
+.login img { filter: drop-shadow(0 8px 12px rgba(18,48,74,.12)); }
+.mark { width: 76px; height: 76px; margin: 0 auto 20px; border-radius: 23px; background: var(--teal-light); color: var(--teal); display: grid; place-items: center; font-size: 33px; font-weight: bold; border: 1px solid #cce8e3; }
+h1 { font-size: 25px; color: var(--navy); margin: 0 0 9px; font-weight: 800; }
+h2 { font-size: 20px; color: var(--navy); margin: 0 0 14px; font-weight: 800; }
+h3 { font-size: 17px; color: var(--navy); margin: 0 0 8px; font-weight: 800; }
+.sub, .muted { color: var(--muted); font-size: 13px; }
+label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin: 14px 0 6px; }
+input, select, textarea { width: 100%; border: 1px solid #d4e0e8; border-radius: 12px; padding: 12px 14px; background: #fbfdfe; color: #26384a; outline: none; transition: .2s; }
+input:focus, select:focus, textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(15,139,131,.12); background: white; }
+textarea { min-height: 105px; resize: vertical; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.actions { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; margin-top: 15px; }
+.status { padding: 13px 15px; border-radius: 12px; background: #f1f5f8; color: #526477; font-size: 13px; margin-top: 15px; white-space: pre-wrap; border: 1px solid var(--line); }
+.status.error { background: #fff1f1; color: var(--red); border-color: #f3d1d1; }
+.status.ok { background: #eaf7ef; color: var(--green); border-color: #cdebd8; }
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 30px; font-size: 12px; font-weight: 800; background: #edf1f5; }
+.pill.pending { background: #fff4d8; color: #96620c; }
+.pill.approved { background: #e5f6ec; color: #087443; }
+.pill.rejected { background: #ffeded; color: #a52a2a; }
+.item { border: 1px solid var(--line); border-radius: 15px; padding: 17px; margin: 13px 0; background: #fff; transition: .2s ease; }
+.item:hover { border-color: #b9d9d5; box-shadow: 0 7px 18px rgba(18,48,74,.07); transform: translateY(-1px); }
+.item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.item p { margin: 7px 0; font-size: 13px; color: #526477; }
+#schoolStatsPanel, #teacherPanel { border-top: 4px solid var(--teal); }
+#teacherApprovalPanel { border-top: 4px solid var(--gold); }
+#schoolStatsPanel > .grid .item { margin: 0; min-height: 112px; background: linear-gradient(145deg, #ffffff, #f8fbfc); }
+#schoolStatsPanel > .grid .item h1 { font-size: 31px; margin-top: 5px; }
+#schoolOverallPercentage { font-size: 43px !important; margin: 5px 0; }
+#schoolStatsPanel > .item[style*="background"] { border: 1px solid #cde5e1; border-radius: 16px; padding: 20px; }
+#domainStats .item { padding: 19px; background: #fcfdfd; }
+#evidenceList .item { padding: 20px; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 21px 0; }
+.hidden { display: none !important; }
+::placeholder { color: #9aabba; }
+@media (max-width: 700px) { main { margin: 16px auto 40px; padding: 0 12px; } .grid { grid-template-columns: 1fr; } .card { padding: 18px; border-radius: 16px; } .login { margin: 5vh auto; padding: 28px 19px; } header { padding: 10px 14px; } header img { width: 58px !important; height: 58px !important; } .brand { font-size: 17px; } #appView > .card:first-child { padding: 22px 20px; } button { padding: 10px 13px; } .actions button { flex: 1 1 auto; } #schoolStatsPanel > .grid .item { min-height: 92px; } }
+@media print { body { background: white; } }
 </style>
 </head>
 <body>
